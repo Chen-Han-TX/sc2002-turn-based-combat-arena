@@ -1,6 +1,7 @@
 package ui;
 
 import model.combatant.Combatant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,6 +33,39 @@ public class GameUI {
         System.out.println("  1) Easy");
         System.out.println("  2) Medium");
         System.out.println("  3) Hard");
+    }
+
+    /** Prompt and return selected player index: 0=Warrior, 1=Wizard. */
+    public int promptPlayerChoice() {
+        System.out.println("\nSelect your player:");
+        System.out.println("  1) Warrior");
+        System.out.println("  2) Wizard");
+        return inputHandler.promptIndex("Player", 1, 2) - 1;
+    }
+
+    /**
+     * Prompt and return selected item indices (duplicates allowed).
+     * Returned values are zero-based indices into itemNames.
+     */
+    public List<Integer> promptItemChoices(List<String> itemNames, int picks) {
+        List<Integer> selected = new ArrayList<>();
+        for (int pick = 1; pick <= picks; pick++) {
+            System.out.println("\nSelect item " + pick + "/" + picks + ":");
+            for (int i = 0; i < itemNames.size(); i++) {
+                System.out.println("  " + (i + 1) + ") " + itemNames.get(i));
+            }
+            selected.add(inputHandler.promptIndex("Item", 1, itemNames.size()) - 1);
+        }
+        return selected;
+    }
+
+    /** Prompt and return selected difficulty index: 0=Easy, 1=Medium, 2=Hard. */
+    public int promptDifficultyChoice() {
+        System.out.println("\nSelect difficulty:");
+        System.out.println("  1) Easy");
+        System.out.println("  2) Medium");
+        System.out.println("  3) Hard");
+        return inputHandler.promptIndex("Difficulty", 1, 3) - 1;
     }
 
     /** Display battle status at start of each round. */
@@ -87,5 +121,14 @@ public class GameUI {
         System.out.println("Enemies Remaining: " + enemiesRemaining);
         System.out.println("Total Rounds Survived: " + totalRounds);
         System.out.println("Choose next: replay / new game / exit");
+    }
+
+    /** Prompt and return post-game option index: 0=replay, 1=new game, 2=exit. */
+    public int promptPostGameChoice() {
+        System.out.println("\nChoose next:");
+        System.out.println("  1) Replay same settings");
+        System.out.println("  2) New game");
+        System.out.println("  3) Exit");
+        return inputHandler.promptIndex("Menu", 1, 3) - 1;
     }
 }

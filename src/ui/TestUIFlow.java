@@ -106,6 +106,27 @@ public class TestUIFlow {
         check("Action choice validates input and returns index 2 for option 3", chosen == 2);
     }
 
+    private static void testPromptPlayerChoice() {
+        GameUI ui = createUIWithInput("0\n2\n");
+        int chosen = ui.promptPlayerChoice();
+        check("Player choice validates input and returns index 1 for option 2", chosen == 1);
+    }
+
+    private static void testPromptItemChoices() {
+        GameUI ui = createUIWithInput("4\n1\n2\n");
+        List<Integer> chosen = ui.promptItemChoices(
+            List.of("Potion", "Power Stone", "Smoke Bomb"), 2
+        );
+        check("Item choices allows duplicates/sequence and returns two picks",
+            chosen.size() == 2 && chosen.get(0) == 0 && chosen.get(1) == 1);
+    }
+
+    private static void testPromptDifficultyChoice() {
+        GameUI ui = createUIWithInput("abc\n3\n");
+        int chosen = ui.promptDifficultyChoice();
+        check("Difficulty choice validates input and returns index 2 for option 3", chosen == 2);
+    }
+
     private static void testPromptTargetChoice() {
         // Contract for this test: UI reads until valid input and returns zero-based index.
         GameUI ui = createUIWithInput("-1\n2\n");
@@ -141,6 +162,12 @@ public class TestUIFlow {
             containsAny(defeatOutput, List.of("2", "5", "round", "enemies")));
     }
 
+    private static void testPromptPostGameChoice() {
+        GameUI ui = createUIWithInput("5\n3\n");
+        int chosen = ui.promptPostGameChoice();
+        check("Post-game choice validates input and returns index 2 for option 3", chosen == 2);
+    }
+
     private static void testMainEntryPointSmoke() {
         String output = captureOutput(() -> {
             try {
@@ -155,6 +182,8 @@ public class TestUIFlow {
         check("Main entry point runs without crash", !output.isBlank());
         check("Main output shows game title",
             containsAny(output, List.of("turn-based combat arena", "combat arena")));
+        check("Main output provides interactive mode hint",
+            containsAny(output, List.of("--interactive", "interactive")));
     }
 
     public static void main(String[] args) {
@@ -163,9 +192,13 @@ public class TestUIFlow {
         testLoadingScreen();
         testRoundStartDisplay();
         testPromptActionChoice();
+        testPromptPlayerChoice();
+        testPromptItemChoices();
+        testPromptDifficultyChoice();
         testPromptTargetChoice();
         testActionResultDisplay();
         testVictoryAndDefeatScreens();
+        testPromptPostGameChoice();
         testMainEntryPointSmoke();
 
         System.out.println("\n=== Results: " + passed + " passed, " + failed + " failed ===");
