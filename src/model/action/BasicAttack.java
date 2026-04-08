@@ -3,10 +3,6 @@ package model.action;
 import model.combatant.Combatant;
 import java.util.List;
 
-/**
- * Owner: Person B
- * Basic attack action: Damage = max(0, Attacker Attack - Target Defense)
- */
 public class BasicAttack implements Action {
 
     @Override
@@ -16,13 +12,20 @@ public class BasicAttack implements Action {
 
     @Override
     public void execute(Combatant performer, Combatant target, List<Combatant> allEnemies) {
-               int damage = Math.max(0, performer.getAttack() - target.getDefense());
-        target.takeRawDamage(damage);
-        System.out.println(performer.getName() + " deals " + damage + " damage to " + target.getName());
+        if (target == null || !target.isAlive()) {
+            return;
+        }
+
+        int beforeHp = target.getCurrentHP();
+        target.takeDamage(performer.getAttack());
+        int actualDamage = beforeHp - target.getCurrentHP();
+
+        System.out.println(performer.getName() + " attacks "
+                + target.getName() + " for " + actualDamage + " damage.");
     }
-    
+
     @Override
     public boolean isAvailable(Combatant performer) {
-        return true; // always available
+        return true;
     }
 }

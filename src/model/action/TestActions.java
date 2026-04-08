@@ -79,8 +79,7 @@ public class TestActions {
         */
 
         // --- ShieldBash ---
-        // TODO: Uncomment when you implement ShieldBash.java
-        /*
+
         System.out.println("\n[ShieldBash]");
         ShieldBash sb = new ShieldBash();
         Warrior w4 = new Warrior();
@@ -89,11 +88,10 @@ public class TestActions {
         check("ShieldBash deals damage: 55 -> 30", g2.getCurrentHP() == 30);
         check("ShieldBash stuns target", 
             g2.getStatusEffects().stream().anyMatch(e -> e.getName().equals("Stun")));
-        */
+
 
         // --- ArcaneBlast ---
-        // TODO: Uncomment when you implement ArcaneBlast.java
-        /*
+
         System.out.println("\n[ArcaneBlast]");
         ArcaneBlast ab = new ArcaneBlast();
         Wizard wiz2 = new Wizard();  // ATK: 50
@@ -106,7 +104,6 @@ public class TestActions {
         check("Arcane Blast hits Goblin: 55 -> 20", g3.getCurrentHP() == 20);
         check("Arcane Blast kills Wolf: 40 -> 0", wolf2.getCurrentHP() == 0);
         check("Wizard ATK +10 per kill -> 60", wiz2.getAttack() == 60);
-        */
 
         // --- Summary ---
         System.out.println("\n=== Results: " + passed + " passed, " + failed + " failed ===");

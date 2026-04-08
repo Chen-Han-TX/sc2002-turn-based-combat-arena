@@ -2,13 +2,13 @@ package model.combatant;
 
 import model.effect.StatusEffect;
 import model.effect.ArcaneBlastEffect;
-//import model.effect.ArcaneBlastEffect; // Needed for the attack check
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SHARED FILE — Updated to support Status Effect stat bonuses.
- * Base class for all characters in the game (players and enemies).
+ * SHARED FILE
+ * Base class for all characters (player + enemies).
+ * Supports status effects (buffs/debuffs).
  */
 public abstract class Combatant {
     protected String name;
@@ -31,78 +31,87 @@ public abstract class Combatant {
         this.alive = true;
     }
 
-    // --- Getters (Updated for Status Effects) ---
+    // --- Basic Getters ---
     public String getName() { return name; }
     public int getMaxHP() { return maxHP; }
     public int getCurrentHP() { return currentHP; }
-    
- 
-//      Calculates total attack including bonuses from Status Effects.
+    public int getSpeed() { return speed; }
+    public boolean isAlive() { return currentHP > 0; }
+    public List<StatusEffect> getStatusEffects() { return statusEffects; }
 
-    public int getAttack() { 
+    // --- Attack (includes Arcane Blast bonuses) ---
+    public int getAttack() {
         int totalAttack = this.attack;
+
         for (StatusEffect effect : statusEffects) {
             if (effect instanceof ArcaneBlastEffect) {
                 totalAttack += 10;
             }
         }
-        return totalAttack; 
+
+        return totalAttack;
     }
 
-    /**
-     * Calculates total defense including potential Status Effects.
-     */
-    public int getDefense() { 
-        int totalDefense = this.defense;
-        // Logic for 'Defend' status effect can be added here similarly
-        return totalDefense; 
+    // --- Defense ---
+    public int getDefense() {
+        return this.defense;
     }
-
-    public int getSpeed() { return speed; }
-    public boolean isAlive() { return currentHP > 0; }
-    public List<StatusEffect> getStatusEffects() { return statusEffects; }
 
     // --- HP management ---
     public void takeDamage(int damage) {
-        // Uses the dynamic getDefense() in case of buffs
-        int actualDamage = Math.max(0, damage - this.getDefense());
-        this.currentHP = Math.max(0, this.currentHP - actualDamage);
-        if (this.currentHP == 0) {
-            this.alive = false;
+        int actualDamage = Math.max(0, damage - getDefense());
+        currentHP = Math.max(0, currentHP - actualDamage);
+
+        if (currentHP == 0) {
+            alive = false;
         }
     }
 
     public void takeRawDamage(int damage) {
-        this.currentHP = Math.max(0, this.currentHP - damage);
-        if (this.currentHP == 0) {
-            this.alive = false;
+        currentHP = Math.max(0, currentHP - damage);
+
+        if (currentHP == 0) {
+            alive = false;
         }
     }
 
     public void heal(int amount) {
         if (isAlive()) {
-            this.currentHP = Math.min(this.maxHP, this.currentHP + amount);
+            currentHP = Math.min(maxHP, currentHP + amount);
         }
     }
 
-    // --- Status effects ---
+    // --- Status Effects ---
     public void addStatusEffect(StatusEffect effect) {
-        this.statusEffects.add(effect);
+        statusEffects.add(effect);
     }
 
+    /**
+     * VERY IMPORTANT:
+     * Removes expired effects AND correctly removes their stat bonuses.
+     */
     public void removeExpiredEffects() {
-        statusEffects.removeIf(StatusEffect::isExpired);
+        List<StatusEffect> toRemove = new ArrayList<>();
+
+        for (StatusEffect effect : statusEffects) {
+            if (effect.isExpired()) {
+                effect.onExpire(this);   // remove buff/debuff
+                toRemove.add(effect);
+            }
+        }
+
+        statusEffects.removeAll(toRemove);
     }
 
     // --- Temporary stat modifiers ---
-    public void modifyDefense(int amount) { this.defense += amount; }
-    public void modifyAttack(int amount) { this.attack += amount; }
+    public void modifyDefense(int amount) {
+        this.defense += amount;
+    }
 
-    // --- Abstract: subclasses decide their behaviour ---
+    public void modifyAttack(int amount) {
+        this.attack += amount;
+    }
+
+    // --- Abstract ---
     public abstract boolean isPlayer();
-    /*
-    @Override
-    public String toString() {
-        return name + " [HP: " + currentHP + "/" + maxHP + " | ATK: " + getAttack() + "]";
-    }*/
 }

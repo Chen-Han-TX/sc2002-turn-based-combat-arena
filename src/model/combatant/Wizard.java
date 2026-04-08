@@ -12,7 +12,6 @@ import java.util.List;
 public class Wizard extends Combatant {
 
     public Wizard() {
-        // Base stats from assignment document
         super("Wizard", 200, 50, 10, 20);
     }
 
@@ -21,29 +20,26 @@ public class Wizard extends Combatant {
         return true;
     }
 
-
-//     * Special Skill: Arcane Blast
-//     * Effect: Deal BasicAttack damage to all enemies currently in combat.
-//     * Each enemy defeated by Arcane Blast adds 10 to the Wizard’s Attack,
-//     * lasting until end of the level.
-//     * * @param enemies The list of enemies in the current battle.
-     
+    /**
+     * Special Skill: Arcane Blast
+     * Hits all living enemies.
+     * Each enemy defeated grants +10 attack (via ArcaneBlastEffect).
+     */
     public void useArcaneBlast(List<Combatant> enemies) {
         int enemiesDefeated = 0;
 
         System.out.println(this.getName() + " casts Arcane Blast!");
 
-        // 1. Loop through all enemies
         for (Combatant enemy : enemies) {
-            // Only hit living enemies
-            if (enemy.isAlive()) {
-                // Calculate damage (BasicAttack)
-                int currentAtk = this.getAttack();
-                enemy.takeDamage(currentAtk);
-                
-                System.out.println("Blast hit " + enemy.getName() + " for " + currentAtk + " damage.");
+            if (enemy != null && enemy.isAlive()) {
 
-                // 2. Check if the enemy died
+                int beforeHp = enemy.getCurrentHP();
+                enemy.takeDamage(this.getAttack());
+                int actualDamage = beforeHp - enemy.getCurrentHP();
+
+                System.out.println("Blast hit " + enemy.getName() 
+                        + " for " + actualDamage + " damage.");
+
                 if (!enemy.isAlive()) {
                     enemiesDefeated++;
                     System.out.println(enemy.getName() + " was defeated!");
@@ -51,29 +47,14 @@ public class Wizard extends Combatant {
             }
         }
 
-        // 3. Apply Arcane Blast Status Effect for each kill
-        // This follows the "Status Effects" section of your document
+        // Add +10 attack per enemy defeated
         for (int i = 0; i < enemiesDefeated; i++) {
             this.addStatusEffect(new ArcaneBlastEffect());
         }
 
         if (enemiesDefeated > 0) {
-            System.out.println("Arcane Power absorbed! Attack increased by " + (enemiesDefeated * 10) + ".");
+            System.out.println("Arcane Power absorbed! Attack increased by " 
+                    + (enemiesDefeated * 10) + ".");
         }
     }
-
-
-//     Overriding getAttack to include bonuses from Status Effects 
-//     like Arcane Blast.
-     
-    @Override
-    public int getAttack() {
-        int bonus = 0;
-        for (var effect : statusEffects) {
-            if (effect instanceof ArcaneBlastEffect) {
-                bonus += 10;
-            }
-        }
-        return this.attack + bonus;
-   }
 }
