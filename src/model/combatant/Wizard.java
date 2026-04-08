@@ -21,12 +21,12 @@ public class Wizard extends Combatant {
         return true;
     }
 
-    /**
-     * Special Skill: Arcane Blast
-     * Effect: Deal BasicAttack damage to all enemies currently in combat.
-     * Each enemy defeated by Arcane Blast adds 10 to the Wizard’s Attack,
-     * lasting until end of the level.
-     * * @param enemies The list of enemies in the current battle.
+
+//     * Special Skill: Arcane Blast
+//     * Effect: Deal BasicAttack damage to all enemies currently in combat.
+//     * Each enemy defeated by Arcane Blast adds 10 to the Wizard’s Attack,
+//     * lasting until end of the level.
+//     * * @param enemies The list of enemies in the current battle.
      
     public void useArcaneBlast(List<Combatant> enemies) {
         int enemiesDefeated = 0;
@@ -60,11 +60,11 @@ public class Wizard extends Combatant {
         if (enemiesDefeated > 0) {
             System.out.println("Arcane Power absorbed! Attack increased by " + (enemiesDefeated * 10) + ".");
         }
-    } */
 
-    /**
-     * Overriding getAttack to include bonuses from Status Effects 
-     * like Arcane Blast.
+
+
+//     Overriding getAttack to include bonuses from Status Effects 
+//     like Arcane Blast.
      
     @Override
     public int getAttack() {
@@ -75,5 +75,5 @@ public class Wizard extends Combatant {
             }
         }
         return this.attack + bonus;
-    }*/
+ 
 }
