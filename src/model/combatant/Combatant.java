@@ -1,6 +1,7 @@
 package model.combatant;
 
 import model.effect.StatusEffect;
+import model.effect.ArcaneBlastEffect;
 //import model.effect.ArcaneBlastEffect; // Needed for the attack check
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,9 @@ public abstract class Combatant {
     public int getMaxHP() { return maxHP; }
     public int getCurrentHP() { return currentHP; }
     
-    /**
-     * Calculates total attack including bonuses from Status Effects.
-     
+ 
+//      Calculates total attack including bonuses from Status Effects.
+
     public int getAttack() { 
         int totalAttack = this.attack;
         for (StatusEffect effect : statusEffects) {
@@ -46,7 +47,7 @@ public abstract class Combatant {
             }
         }
         return totalAttack; 
-    }*/
+    }
 
     /**
      * Calculates total defense including potential Status Effects.

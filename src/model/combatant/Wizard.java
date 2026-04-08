@@ -1,6 +1,6 @@
 package model.combatant;
 
-//import model.effect.ArcaneBlastEffect;
+import model.effect.ArcaneBlastEffect;
 import java.util.List;
 
 /**
@@ -60,7 +60,7 @@ public class Wizard extends Combatant {
         if (enemiesDefeated > 0) {
             System.out.println("Arcane Power absorbed! Attack increased by " + (enemiesDefeated * 10) + ".");
         }
-
+    }
 
 
 //     Overriding getAttack to include bonuses from Status Effects 
@@ -75,5 +75,5 @@ public class Wizard extends Combatant {
             }
         }
         return this.attack + bonus;
- 
+   }
 }
