@@ -1,5 +1,6 @@
 package model.combatant;
 
+import model.action.Action;
 import model.effect.StatusEffect;
 import model.effect.ArcaneBlastEffect;
 import java.util.ArrayList;
@@ -114,4 +115,9 @@ public abstract class Combatant {
 
     // --- Abstract ---
     public abstract boolean isPlayer();
+
+    /**
+     * Returns the special skill Action for this combatant, or null if none.
+     */
+    public abstract Action getSpecialSkill();
 }
