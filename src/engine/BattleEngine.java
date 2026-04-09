@@ -310,6 +310,7 @@ public class BattleEngine {
             // End-of-round effect ticking
             tickAllEffects();
             removeExpiredEffects();
+            ui.showRoundEnd(player, enemies);
         }
 
         showBattleResult();
@@ -378,7 +379,8 @@ public class BattleEngine {
             actionNames.add("Special Skill");
             actionNames.add("Use Item");
 
-            int actionChoice = ui.promptActionChoice(actionNames);
+            int actionChoice = ui.promptActionChoice(actionNames, playerSpecialCooldown,
+                    countNonConsumedItems());
 
             switch (actionChoice) {
                 case 0:
@@ -573,6 +575,16 @@ public class BattleEngine {
             }
         }
         return aliveEnemies;
+    }
+
+    private int countNonConsumedItems() {
+        int count = 0;
+        for (Item item : playerItems) {
+            if (!item.isConsumed()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private boolean hasUsableItems() {

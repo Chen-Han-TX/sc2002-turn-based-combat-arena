@@ -13,6 +13,11 @@ public class Defend implements Action {
     }
 
     @Override
+    public boolean needsTarget() {
+        return false;
+    }
+
+    @Override
     public void execute(Combatant performer, Combatant target, List<Combatant> allEnemies) {
 
         int duration = 2;

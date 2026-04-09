@@ -83,6 +83,15 @@ public class GameUI {
         }
     }
 
+    /** Display end-of-round summary for all combatants. */
+    public void showRoundEnd(Combatant player, List<Combatant> enemies) {
+        System.out.println("\n-- End of Round --");
+        System.out.println("Player: " + BattleDisplay.combatantSummary(player));
+        for (Combatant enemy : enemies) {
+            System.out.println("  " + BattleDisplay.combatantSummary(enemy));
+        }
+    }
+
     /** Prompt player to choose an action. Return the index of chosen action. */
     public int promptActionChoice(List<String> actionNames) {
         System.out.println("\nChoose action:");
@@ -90,6 +99,13 @@ public class GameUI {
             System.out.println("  " + (i + 1) + ") " + actionNames.get(i));
         }
         return inputHandler.promptIndex("Action", 1, actionNames.size()) - 1;
+    }
+
+    /** Enhanced action prompt showing cooldown and item status. */
+    public int promptActionChoice(List<String> actionNames, int cooldown, int itemsRemaining) {
+        System.out.println("\nCooldown: " + (cooldown > 0 ? cooldown + " turn(s)" : "Ready"));
+        System.out.println("Items remaining: " + itemsRemaining);
+        return promptActionChoice(actionNames);
     }
 
     /** Prompt player to choose a target enemy. */
