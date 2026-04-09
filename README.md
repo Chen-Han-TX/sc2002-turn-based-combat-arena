@@ -16,20 +16,6 @@ java Main --interactive
 
 Running without `--interactive` prints the title and exits (smoke test mode).
 
-### Running Tests
-
-```bash
-cd src
-javac TestGameFlow.java && java TestGameFlow       # Full game-flow verification
-javac model/combatant/TestCombatants.java && java model.combatant.TestCombatants
-javac model/action/TestActions.java && java model.action.TestActions
-javac model/item/TestItemsAndEffects.java && java model.item.TestItemsAndEffects
-javac engine/TestEngine.java && java engine.TestEngine
-javac ui/TestUIFlow.java && java ui.TestUIFlow
-```
-
----
-
 ## Game Overview
 
 A player (Warrior or Wizard) battles waves of enemies (Goblins and Wolves) across three difficulty levels. Each round, combatants act in speed order. The player wins by eliminating all enemies; the player loses if their HP reaches zero.
