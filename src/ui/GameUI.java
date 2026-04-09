@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Owner: Person E
+ * Person E Task
  * Handles all CLI display and user input.
  * Separated from battle logic (UI should not contain game rules).
  */
+
 public class GameUI {
     private final InputHandler inputHandler;
 
@@ -119,11 +120,12 @@ public class GameUI {
     /** Display defeat screen. */
     public void showDefeatScreen(int enemiesRemaining, int totalRounds) {
         System.out.println("\n=== Defeat ===");
-        System.out.println("Defeated. Do not give up, try again!");
-        System.out.println("Statistics:");
-        System.out.println("Enemies Remaining: " + enemiesRemaining);
-        System.out.println("Total Rounds Survived: " + totalRounds);
-        System.out.println("Choose next: replay / new game / exit");
+        System.out.println("Defeated. Don't give up, try again!");
+        System.out.println("Statistics: Enemies remaining: " + enemiesRemaining
+                + " | Total Rounds Survived: " + totalRounds);
+        System.out.println("Option to replay with the same settings");
+        System.out.println("Option to start a new game (return to the home screen)");
+        System.out.println("Option to exit");
     }
 
     /** Prompt and return post-game option index: 0=replay, 1=new game, 2=exit. */
