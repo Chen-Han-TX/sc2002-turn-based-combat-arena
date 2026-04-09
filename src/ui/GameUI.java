@@ -110,10 +110,9 @@ public class GameUI {
     /** Display victory screen. */
     public void showVictoryScreen(int remainingHP, int maxHP, int totalRounds) {
         System.out.println("\n=== Victory ===");
-        System.out.println("Congratulations, you defeated all enemies!");
-        System.out.println("Statistics:");
-        System.out.println("Remaining HP: " + remainingHP + "/" + maxHP);
-        System.out.println("Total Rounds: " + totalRounds);
+        System.out.println("Congratulations, you have defeated all your enemies.");
+        System.out.println("Statistics: Remaining HP: " + remainingHP + "/" + maxHP
+                + " | Total Rounds: " + totalRounds);
         System.out.println("Choose next: replay / new game / exit");
     }
 

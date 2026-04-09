@@ -20,9 +20,9 @@ import java.util.List;
  * - Provide a clear red/green checklist while implementing GameUI/Main.
  *
  * How to run:
- *   cd src
- *   javac ui/TestUIFlow.java ui/GameUI.java Main.java
- *   java ui.TestUIFlow
+    cd src
+    javac ui/TestUIFlow.java ui/GameUI.java Main.java
+    java ui.TestUIFlow
  */
 public class TestUIFlow {
 
