@@ -2,11 +2,17 @@ package model.effect;
 
 import model.combatant.Combatant;
 
+/**
+ * Defend Buff:
+ * Increases defense temporarily for 2 turns.
+ */
 public class DefendBuff implements StatusEffect {
     private int turnsRemaining;
+    private boolean applied;
 
     public DefendBuff(int turnsRemaining) {
         this.turnsRemaining = turnsRemaining;
+        this.applied = false;
     }
 
     @Override
@@ -16,7 +22,10 @@ public class DefendBuff implements StatusEffect {
 
     @Override
     public void applyEffect(Combatant target) {
-        // Leave empty if defense bonus is handled elsewhere
+        if (!applied) {
+            target.modifyDefense(10);
+            applied = true;
+        }
     }
 
     @Override
@@ -38,6 +47,9 @@ public class DefendBuff implements StatusEffect {
 
     @Override
     public void onExpire(Combatant target) {
-        // Leave empty
+        if (applied) {
+            target.modifyDefense(-10);
+            applied = false;
+        }
     }
 }

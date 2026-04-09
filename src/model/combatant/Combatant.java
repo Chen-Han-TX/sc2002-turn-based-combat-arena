@@ -1,12 +1,14 @@
 package model.combatant;
 
 import model.effect.StatusEffect;
+import model.effect.ArcaneBlastEffect;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SHARED FILE — Do not edit without group agreement.
- * Base class for all characters in the game (players and enemies).
+ * SHARED FILE
+ * Base class for all characters (player + enemies).
+ * Supports status effects (buffs/debuffs).
  */
 public abstract class Combatant {
     protected String name;
@@ -29,57 +31,87 @@ public abstract class Combatant {
         this.alive = true;
     }
 
-    // --- Getters ---
+    // --- Basic Getters ---
     public String getName() { return name; }
     public int getMaxHP() { return maxHP; }
     public int getCurrentHP() { return currentHP; }
-    public int getAttack() { return attack; }
-    public int getDefense() { return defense; }
     public int getSpeed() { return speed; }
-    public boolean isAlive() { return alive; }
+    public boolean isAlive() { return currentHP > 0; }
     public List<StatusEffect> getStatusEffects() { return statusEffects; }
+
+    // --- Attack (includes Arcane Blast bonuses) ---
+    public int getAttack() {
+        int totalAttack = this.attack;
+
+        for (StatusEffect effect : statusEffects) {
+            if (effect instanceof ArcaneBlastEffect) {
+                totalAttack += 10;
+            }
+        }
+
+        return totalAttack;
+    }
+
+    // --- Defense ---
+    public int getDefense() {
+        return this.defense;
+    }
 
     // --- HP management ---
     public void takeDamage(int damage) {
-        int actualDamage = Math.max(0, damage - this.defense);
-        this.currentHP = Math.max(0, this.currentHP - actualDamage);
-        if (this.currentHP == 0) {
-            this.alive = false;
+        int actualDamage = Math.max(0, damage - getDefense());
+        currentHP = Math.max(0, currentHP - actualDamage);
+
+        if (currentHP == 0) {
+            alive = false;
         }
     }
 
-    /**
-     * Take raw damage that bypasses defense (e.g. already calculated).
-     */
     public void takeRawDamage(int damage) {
-        this.currentHP = Math.max(0, this.currentHP - damage);
-        if (this.currentHP == 0) {
-            this.alive = false;
+        currentHP = Math.max(0, currentHP - damage);
+
+        if (currentHP == 0) {
+            alive = false;
         }
     }
 
     public void heal(int amount) {
-        this.currentHP = Math.min(this.maxHP, this.currentHP + amount);
+        if (isAlive()) {
+            currentHP = Math.min(maxHP, currentHP + amount);
+        }
     }
 
-    // --- Status effects ---
+    // --- Status Effects ---
     public void addStatusEffect(StatusEffect effect) {
-        this.statusEffects.add(effect);
+        statusEffects.add(effect);
     }
 
+    /**
+     * VERY IMPORTANT:
+     * Removes expired effects AND correctly removes their stat bonuses.
+     */
     public void removeExpiredEffects() {
-        statusEffects.removeIf(StatusEffect::isExpired);
+        List<StatusEffect> toRemove = new ArrayList<>();
+
+        for (StatusEffect effect : statusEffects) {
+            if (effect.isExpired()) {
+                effect.onExpire(this);   // remove buff/debuff
+                toRemove.add(effect);
+            }
+        }
+
+        statusEffects.removeAll(toRemove);
     }
 
-    // --- Temporary stat modifiers (for buffs/debuffs) ---
-    public void modifyDefense(int amount) { this.defense += amount; }
-    public void modifyAttack(int amount) { this.attack += amount; }
+    // --- Temporary stat modifiers ---
+    public void modifyDefense(int amount) {
+        this.defense += amount;
+    }
 
-    // --- Abstract: subclasses decide their behaviour ---
+    public void modifyAttack(int amount) {
+        this.attack += amount;
+    }
+
+    // --- Abstract ---
     public abstract boolean isPlayer();
-
-    @Override
-    public String toString() {
-        return name + " [HP: " + currentHP + "/" + maxHP + "]";
-    }
 }

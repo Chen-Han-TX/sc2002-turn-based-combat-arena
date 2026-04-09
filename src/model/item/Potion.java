@@ -4,8 +4,7 @@ import model.combatant.Combatant;
 import java.util.List;
 
 /**
- * Owner: Person C
- * Potion: Heals 100 HP. Single use. New HP = min(currentHP + 100, maxHP)
+ * Potion: Heals 100 HP. Single use.
  */
 public class Potion implements Item {
     private boolean consumed = false;
@@ -17,9 +16,12 @@ public class Potion implements Item {
 
     @Override
     public void use(Combatant user, Combatant target, List<Combatant> allEnemies) {
-        // TODO: heal user by 100, cap at maxHP
-        // user.heal(100);
-        // consumed = true;
+        if (consumed) {
+            return;
+        }
+
+        user.heal(100);
+        consumed = true;
     }
 
     @Override
