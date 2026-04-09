@@ -3,8 +3,7 @@ package ui;
 import java.util.Scanner;
 
 /**
- * Owner: Person E
- * Centralized CLI input validation for numeric menu choices.
+ * Person E dstuff
  */
 public class InputHandler {
     private final Scanner scanner;
@@ -14,7 +13,7 @@ public class InputHandler {
     }
 
     /**
-     * Prompt until a valid integer within [min, max] is entered.
+     * Prompt until a valid integer is enter
      */
     public int promptIndex(String label, int min, int max) {
         while (true) {
@@ -27,7 +26,7 @@ public class InputHandler {
                     return value;
                 }
             } catch (NumberFormatException ignored) {
-                // Keep looping with feedback below.
+                // Keep looping with feedback
             }
 
             System.out.println("Invalid input. Enter a number from " + min + " to " + max + ".");

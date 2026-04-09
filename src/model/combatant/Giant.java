@@ -5,13 +5,13 @@ import model.action.DoubleSmash;
 
 /**
  * Giant player class.
- * HP: 500, Attack: 35, Defense: 30, Speed: 10
+ * HP: 400, Attack: 35, Defense: 20, Speed: 10
  * Special Skill: Double Smash — attacks the same target twice in one turn.
  */
 public class Giant extends Combatant {
 
     public Giant() {
-        super("Giant", 500, 35, 30, 10);
+        super("Giant", 400, 35, 20, 10);
     }
 
     @Override

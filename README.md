@@ -18,13 +18,23 @@ Running without `--interactive` prints the title and exits (smoke test mode).
 
 ## Game Overview
 
-A player (Warrior or Wizard) battles waves of enemies (Goblins and Wolves) across three difficulty levels. Each round, combatants act in speed order. The player wins by eliminating all enemies; the player loses if their HP reaches zero.
+A player (Warrior, Wizard, or Giant) battles waves of enemies (Goblins and Wolves) across three difficulty levels. Each round, combatants act in speed order. The player wins by eliminating all enemies; the player loses if their HP reaches zero.
 
 ### Setup Phase
 
-1. Choose a player class (Warrior or Wizard)
+1. Choose a player class (Warrior, Wizard, or Giant)
 2. Pick 2 items from: Potion, Power Stone, Smoke Bomb (duplicates allowed)
 3. Select difficulty: Easy, Medium, or Hard
+
+### Players
+
+| Player | HP | ATK | DEF | SPD | Special Skill |
+|--------|----|-----|-----|-----|---------------|
+| **Warrior** | 260 | 40 | 20 | 30 | **Shield Bash** — deals ATK damage to one target and stuns it for the current turn and next turn |
+| **Wizard** | 200 | 50 | 10 | 20 | **Arcane Blast** — hits all enemies; each enemy killed adds +10 ATK for the rest of the level |
+| **Giant** | 400 | 35 | 20 | 10 | **Double Smash** — attacks the same target twice in a single turn |
+
+All special skills share a **3-turn cooldown**.
 
 ### Combat Actions
 
@@ -32,7 +42,7 @@ A player (Warrior or Wizard) battles waves of enemies (Goblins and Wolves) acros
 |--------|-------------|
 | **Basic Attack** | `damage = max(0, ATK - target DEF)` on one target |
 | **Defend** | +10 DEF for current round and next round |
-| **Special Skill** | Warrior: Shield Bash (single-target damage + 2-turn stun). Wizard: Arcane Blast (hits all enemies, +10 ATK per kill for rest of level). 3-turn cooldown. |
+| **Special Skill** | Class-specific ability (see table above). 3-turn cooldown. |
 | **Use Item** | Potion (heal 100 HP), Power Stone (free special skill, no cooldown change), Smoke Bomb (enemies deal 0 damage for 2 turns) |
 
 ### Difficulty Levels
@@ -57,14 +67,16 @@ src/
 │   │   ├── Combatant.java             <- Abstract base (shared contract)
 │   │   ├── Warrior.java               <- Player class (Shield Bash)
 │   │   ├── Wizard.java                <- Player class (Arcane Blast)
+│   │   ├── Giant.java                 <- Player class (Double Smash)
 │   │   ├── Goblin.java                <- Enemy (HP:55 ATK:35 DEF:15 SPD:25)
 │   │   └── Wolf.java                  <- Enemy (HP:40 ATK:45 DEF:5 SPD:35)
 │   ├── action/
-│   │   ├── Action.java                <- Interface (shared contract)
+│   │   ├── Action.java                <- Interface (needsTarget() default method)
 │   │   ├── BasicAttack.java
 │   │   ├── Defend.java
 │   │   ├── ShieldBash.java
-│   │   └── ArcaneBlast.java
+│   │   ├── ArcaneBlast.java
+│   │   └── DoubleSmash.java           <- Giant special skill
 │   ├── item/
 │   │   ├── Item.java                  <- Interface (shared contract)
 │   │   ├── Potion.java
@@ -102,7 +114,7 @@ The UI layer never contains game rules. The engine depends on abstractions (inte
 |-----------|-----------------|
 | **SRP** | Each class has one job: `BasicAttack` handles attack logic, `GameUI` handles display, `BattleEngine` manages the round loop, etc. |
 | **OCP** | New actions or status effects can be added by implementing `Action` / `StatusEffect` without modifying `BattleEngine`. The `getSpecialSkill()` + `needsTarget()` pattern lets the engine handle any future player class. |
-| **LSP** | `Warrior`, `Wizard`, `Goblin`, and `Wolf` are all interchangeable as `Combatant` throughout the engine. |
+| **LSP** | `Warrior`, `Wizard`, `Giant`, `Goblin`, and `Wolf` are all interchangeable as `Combatant` throughout the engine. |
 | **ISP** | Interfaces are focused: `Action`, `Item`, `StatusEffect`, `TurnOrderStrategy` each define only what their implementors need. |
 | **DIP** | `BattleEngine` depends on `TurnOrderStrategy` (interface), `Action` (interface), and `Combatant` (abstraction). It calls `player.getSpecialSkill()` rather than checking `instanceof`. |
 
@@ -111,8 +123,8 @@ The UI layer never contains game rules. The engine depends on abstractions (inte
 ## Team Responsibilities
 | Person | Package(s) | Key Files |
 |--------|-----------|-----------|
-| **A** | `model/combatant/` | Combatant, Warrior, Wizard, Goblin, Wolf |
-| **B** | `model/action/` | Action, BasicAttack, Defend, ShieldBash, ArcaneBlast |
+| **A** | `model/combatant/` | Combatant, Warrior, Wizard, Giant, Goblin, Wolf |
+| **B** | `model/action/` | Action, BasicAttack, Defend, ShieldBash, ArcaneBlast, DoubleSmash |
 | **C** | `model/item/` + `model/effect/` | Potion, PowerStone, SmokeBomb, StunEffect, DefendBuff, SmokeBombEffect, ArcaneBlastEffect |
 | **D** | `engine/` | BattleEngine, SpeedBasedOrder, TurnOrderStrategy |
 | **E** | `ui/` + `Main.java` | GameUI, InputHandler, BattleDisplay, Main |

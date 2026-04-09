@@ -1,17 +1,14 @@
 package model.item;
 
-import model.action.ArcaneBlast;
-import model.action.ShieldBash;
+import model.action.Action;
 import model.combatant.Combatant;
-import model.combatant.Warrior;
-import model.combatant.Wizard;
 
 import java.util.List;
 
 /**
  * Power Stone:
- * Triggers special skill once without changing cooldown.
- * Single use.
+ * Triggers the user's special skill once without changing cooldown.
+ * Single use. Works for any player class via getSpecialSkill().
  */
 public class PowerStone implements Item {
     private boolean consumed = false;
@@ -27,17 +24,21 @@ public class PowerStone implements Item {
             return;
         }
 
-        if (user instanceof Wizard) {
-            new ArcaneBlast().execute(user, null, allEnemies);
-        } else if (user instanceof Warrior) {
+        Action specialSkill = user.getSpecialSkill();
+        if (specialSkill == null) {
+            System.out.println("Power Stone failed: this combatant has no special skill.");
+            return;
+        }
+
+        if (specialSkill.needsTarget()) {
             if (target == null || !target.isAlive()) {
-                System.out.println("Power Stone failed: valid target required for Shield Bash.");
+                System.out.println("Power Stone failed: valid target required for "
+                        + specialSkill.getName() + ".");
                 return;
             }
-            new ShieldBash().execute(user, target, allEnemies);
+            specialSkill.execute(user, target, allEnemies);
         } else {
-            System.out.println("This combatant has no special skill.");
-            return;
+            specialSkill.execute(user, null, allEnemies);
         }
 
         consumed = true;
