@@ -1,5 +1,7 @@
 package model.combatant;
 
+import model.action.Action;
+
 /**
  * Owner: Person A
  * Goblin enemy class.
@@ -14,5 +16,10 @@ public class Goblin extends Combatant {
     @Override
     public boolean isPlayer() {
         return false;
+    }
+
+    @Override
+    public Action getSpecialSkill() {
+        return null;
     }
 }

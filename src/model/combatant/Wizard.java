@@ -1,5 +1,7 @@
 package model.combatant;
 
+import model.action.Action;
+import model.action.ArcaneBlast;
 import model.effect.ArcaneBlastEffect;
 import java.util.List;
 
@@ -18,6 +20,11 @@ public class Wizard extends Combatant {
     @Override
     public boolean isPlayer() {
         return true;
+    }
+
+    @Override
+    public Action getSpecialSkill() {
+        return new ArcaneBlast();
     }
 
     /**
