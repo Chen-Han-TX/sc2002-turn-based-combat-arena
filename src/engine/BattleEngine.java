@@ -172,18 +172,15 @@
 
 package engine;
 
+import model.action.Action;
 import model.action.BasicAttack;
 import model.action.Defend;
 import model.combatant.Combatant;
-import model.combatant.Warrior;
-import model.combatant.Wizard;
 import model.effect.SmokeBombEffect;
 import model.effect.StatusEffect;
 import model.effect.StunEffect;
 import model.item.Item;
 import ui.GameUI;
-import model.action.ArcaneBlast;
-import model.action.ShieldBash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -313,6 +310,7 @@ public class BattleEngine {
             // End-of-round effect ticking
             tickAllEffects();
             removeExpiredEffects();
+            ui.showRoundEnd(player, enemies);
         }
 
         showBattleResult();
@@ -381,7 +379,8 @@ public class BattleEngine {
             actionNames.add("Special Skill");
             actionNames.add("Use Item");
 
-            int actionChoice = ui.promptActionChoice(actionNames);
+            int actionChoice = ui.promptActionChoice(actionNames, playerSpecialCooldown,
+                    countNonConsumedItems());
 
             switch (actionChoice) {
                 case 0:
@@ -439,35 +438,30 @@ public class BattleEngine {
      * consumeCooldown = false for Power Stone usage
      */
     private void performSpecialSkill(boolean consumeCooldown) {
-        if (player instanceof Warrior) {
-            List<Combatant> aliveEnemies = getAliveEnemies();
+        Action specialSkill = player.getSpecialSkill();
+        if (specialSkill == null) {
+            ui.showActionResult("This player has no special skill implemented.");
+            return;
+        }
 
+        // If the skill needs a target (e.g. Shield Bash), prompt for one
+        if (specialSkill.needsTarget()) {
+            List<Combatant> aliveEnemies = getAliveEnemies();
             if (aliveEnemies.isEmpty()) {
                 ui.showActionResult("No targets available.");
                 return;
             }
-
             int targetIndex = ui.promptTargetChoice(aliveEnemies);
             Combatant target = aliveEnemies.get(targetIndex);
-
-            new ShieldBash().execute(player, target, enemies);
-
-            if (consumeCooldown) {
-                playerSpecialCooldown = 3;
-            }
-            return;
+            specialSkill.execute(player, target, enemies);
+        } else {
+            // AoE skills like Arcane Blast pass null target
+            specialSkill.execute(player, null, enemies);
         }
 
-        if (player instanceof Wizard) {
-            new ArcaneBlast().execute(player, null, enemies);
-
-            if (consumeCooldown) {
-                playerSpecialCooldown = 3;
-            }
-            return;
+        if (consumeCooldown) {
+            playerSpecialCooldown = 3;
         }
-
-        ui.showActionResult("This player has no special skill implemented.");
     }
 
 
@@ -489,21 +483,19 @@ public class BattleEngine {
         Item chosenItem = usableItems.get(itemChoice);
 
         if ("Power Stone".equalsIgnoreCase(chosenItem.getName())) {
-            if (player instanceof Warrior) {
+            Action specialSkill = player.getSpecialSkill();
+            if (specialSkill != null && specialSkill.needsTarget()) {
                 List<Combatant> aliveEnemies = getAliveEnemies();
-
                 if (aliveEnemies.isEmpty()) {
                     ui.showActionResult("No targets available.");
                     return;
                 }
-
                 int targetIndex = ui.promptTargetChoice(aliveEnemies);
                 Combatant target = aliveEnemies.get(targetIndex);
                 chosenItem.use(player, target, enemies);
             } else {
                 chosenItem.use(player, null, enemies);
             }
-
             ui.showActionResult(player.getName() + " uses Power Stone!");
             return;
         }
@@ -583,6 +575,16 @@ public class BattleEngine {
             }
         }
         return aliveEnemies;
+    }
+
+    private int countNonConsumedItems() {
+        int count = 0;
+        for (Item item : playerItems) {
+            if (!item.isConsumed()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private boolean hasUsableItems() {

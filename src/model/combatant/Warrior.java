@@ -1,4 +1,7 @@
 package model.combatant;
+
+import model.action.Action;
+import model.action.ShieldBash;
 import model.effect.StunEffect;
 /**
  * Owner: Person A
@@ -15,6 +18,11 @@ public class Warrior extends Combatant {
     @Override
     public boolean isPlayer() {
         return true;
+    }
+
+    @Override
+    public Action getSpecialSkill() {
+        return new ShieldBash();
     }
 
     // TODO: Add any Warrior-specific methods if needed

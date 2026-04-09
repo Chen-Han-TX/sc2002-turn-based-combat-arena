@@ -17,6 +17,11 @@ public class ArcaneBlast implements Action {
     }
 
     @Override
+    public boolean needsTarget() {
+        return false;
+    }
+
+    @Override
     public void execute(Combatant performer, Combatant target, List<Combatant> allEnemies) {
         if (!(performer instanceof Wizard)) {
             System.out.println("Only Wizard can use Arcane Blast.");

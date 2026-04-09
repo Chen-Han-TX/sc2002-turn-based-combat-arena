@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Owner: Person E
+ * Person E Task
  * Handles all CLI display and user input.
  * Separated from battle logic (UI should not contain game rules).
  */
+
 public class GameUI {
     private final InputHandler inputHandler;
 
@@ -24,15 +25,19 @@ public class GameUI {
         System.out.println("  1) Warrior (HP:260 ATK:40 DEF:20 SPD:30)");
         System.out.println("  2) Wizard  (HP:200 ATK:50 DEF:10 SPD:20)");
         System.out.println();
+        System.out.println("Enemies:");
+        System.out.println("  - Goblin (HP:55 ATK:35 DEF:15 SPD:25)");
+        System.out.println("  - Wolf (HP:40 ATK:45 DEF:5 SPD:35)");
+        System.out.println();
         System.out.println("Choose 2 items (duplicates allowed):");
         System.out.println("  - Potion");
         System.out.println("  - Power Stone");
         System.out.println("  - Smoke Bomb");
         System.out.println();
         System.out.println("Choose difficulty:");
-        System.out.println("  1) Easy");
-        System.out.println("  2) Medium");
-        System.out.println("  3) Hard");
+        System.out.println("  1) Easy  — 3 Goblins");
+        System.out.println("  2) Medium — 1 Goblin + 1 Wolf, Backup Spawn: 2 Wolves");
+        System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
     /** Prompt and return selected player index: 0=Warrior, 1=Wizard. */
@@ -78,6 +83,15 @@ public class GameUI {
         }
     }
 
+    /** Display end-of-round summary for all combatants. */
+    public void showRoundEnd(Combatant player, List<Combatant> enemies) {
+        System.out.println("\n-- End of Round --");
+        System.out.println("Player: " + BattleDisplay.combatantSummary(player));
+        for (Combatant enemy : enemies) {
+            System.out.println("  " + BattleDisplay.combatantSummary(enemy));
+        }
+    }
+
     /** Prompt player to choose an action. Return the index of chosen action. */
     public int promptActionChoice(List<String> actionNames) {
         System.out.println("\nChoose action:");
@@ -85,6 +99,13 @@ public class GameUI {
             System.out.println("  " + (i + 1) + ") " + actionNames.get(i));
         }
         return inputHandler.promptIndex("Action", 1, actionNames.size()) - 1;
+    }
+
+    /** Enhanced action prompt showing cooldown and item status. */
+    public int promptActionChoice(List<String> actionNames, int cooldown, int itemsRemaining) {
+        System.out.println("\nCooldown: " + (cooldown > 0 ? cooldown + " turn(s)" : "Ready"));
+        System.out.println("Items remaining: " + itemsRemaining);
+        return promptActionChoice(actionNames);
     }
 
     /** Prompt player to choose a target enemy. */
@@ -106,21 +127,21 @@ public class GameUI {
     /** Display victory screen. */
     public void showVictoryScreen(int remainingHP, int maxHP, int totalRounds) {
         System.out.println("\n=== Victory ===");
-        System.out.println("Congratulations, you defeated all enemies!");
-        System.out.println("Statistics:");
-        System.out.println("Remaining HP: " + remainingHP + "/" + maxHP);
-        System.out.println("Total Rounds: " + totalRounds);
+        System.out.println("Congratulations, you have defeated all your enemies.");
+        System.out.println("Statistics: Remaining HP: " + remainingHP + "/" + maxHP
+                + " | Total Rounds: " + totalRounds);
         System.out.println("Choose next: replay / new game / exit");
     }
 
     /** Display defeat screen. */
     public void showDefeatScreen(int enemiesRemaining, int totalRounds) {
         System.out.println("\n=== Defeat ===");
-        System.out.println("Defeated. Do not give up, try again!");
-        System.out.println("Statistics:");
-        System.out.println("Enemies Remaining: " + enemiesRemaining);
-        System.out.println("Total Rounds Survived: " + totalRounds);
-        System.out.println("Choose next: replay / new game / exit");
+        System.out.println("Defeated. Don't give up, try again!");
+        System.out.println("Statistics: Enemies remaining: " + enemiesRemaining
+                + " | Total Rounds Survived: " + totalRounds);
+        System.out.println("Option to replay with the same settings");
+        System.out.println("Option to start a new game (return to the home screen)");
+        System.out.println("Option to exit");
     }
 
     /** Prompt and return post-game option index: 0=replay, 1=new game, 2=exit. */
