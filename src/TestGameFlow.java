@@ -17,6 +17,13 @@ import model.item.SmokeBomb;
 
 import java.util.ArrayList;
 import java.util.List;
+/*
+How to run:
+cd src
+javac TestGameFlow.java
+java TestGameFlow
+
+*/
 
 public class TestGameFlow {
 
