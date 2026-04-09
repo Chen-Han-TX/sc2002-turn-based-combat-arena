@@ -442,8 +442,8 @@ public class BattleEngine {
             return;
         }
 
-        // If the skill needs a target (e.g. ShieldBash), prompt for one
-        if (specialSkill.getName().equals("Shield Bash")) {
+        // If the skill needs a target (e.g. Shield Bash), prompt for one
+        if (specialSkill.needsTarget()) {
             List<Combatant> aliveEnemies = getAliveEnemies();
             if (aliveEnemies.isEmpty()) {
                 ui.showActionResult("No targets available.");
@@ -482,7 +482,7 @@ public class BattleEngine {
 
         if ("Power Stone".equalsIgnoreCase(chosenItem.getName())) {
             Action specialSkill = player.getSpecialSkill();
-            if (specialSkill != null && specialSkill.getName().equals("Shield Bash")) {
+            if (specialSkill != null && specialSkill.needsTarget()) {
                 List<Combatant> aliveEnemies = getAliveEnemies();
                 if (aliveEnemies.isEmpty()) {
                     ui.showActionResult("No targets available.");

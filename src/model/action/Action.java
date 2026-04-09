@@ -27,4 +27,12 @@ public interface Action {
      * e.g. special skill might be on cooldown, items might be consumed.
      */
     boolean isAvailable(Combatant performer);
+
+    /**
+     * Whether this action requires a specific target.
+     * Default true. Override to false for AoE or self-targeting actions.
+     */
+    default boolean needsTarget() {
+        return true;
+    }
 }
