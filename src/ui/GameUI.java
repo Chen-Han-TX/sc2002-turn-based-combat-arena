@@ -24,15 +24,19 @@ public class GameUI {
         System.out.println("  1) Warrior (HP:260 ATK:40 DEF:20 SPD:30)");
         System.out.println("  2) Wizard  (HP:200 ATK:50 DEF:10 SPD:20)");
         System.out.println();
+        System.out.println("Enemies:");
+        System.out.println("  - Goblin (HP:55 ATK:35 DEF:15 SPD:25)");
+        System.out.println("  - Wolf (HP:40 ATK:45 DEF:5 SPD:35)");
+        System.out.println();
         System.out.println("Choose 2 items (duplicates allowed):");
         System.out.println("  - Potion");
         System.out.println("  - Power Stone");
         System.out.println("  - Smoke Bomb");
         System.out.println();
         System.out.println("Choose difficulty:");
-        System.out.println("  1) Easy");
-        System.out.println("  2) Medium");
-        System.out.println("  3) Hard");
+        System.out.println("  1) Easy  — 3 Goblins");
+        System.out.println("  2) Medium — 1 Goblin + 1 Wolf, Backup Spawn: 2 Wolves");
+        System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
     /** Prompt and return selected player index: 0=Warrior, 1=Wizard. */
