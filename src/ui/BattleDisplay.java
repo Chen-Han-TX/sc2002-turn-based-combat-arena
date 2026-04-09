@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Owner: Person E
- * Pure formatting helpers for battle screen output.
+ * Person E stuff
  */
 public final class BattleDisplay {
     private BattleDisplay() {}

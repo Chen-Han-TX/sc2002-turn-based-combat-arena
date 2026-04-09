@@ -7,9 +7,7 @@ import java.util.Scanner;
 
 /**
  * Person E Task
- * Handles all CLI display and user input.
- * Separated from battle logic (UI should not contain game rules).
- */
+**/
 
 public class GameUI {
     private final InputHandler inputHandler;
@@ -24,6 +22,7 @@ public class GameUI {
         System.out.println("Choose your player:");
         System.out.println("  1) Warrior (HP:260 ATK:40 DEF:20 SPD:30)");
         System.out.println("  2) Wizard  (HP:200 ATK:50 DEF:10 SPD:20)");
+        System.out.println("  3) Giant   (HP:400 ATK:35 DEF:20 SPD:10)");
         System.out.println();
         System.out.println("Enemies:");
         System.out.println("  - Goblin (HP:55 ATK:35 DEF:15 SPD:25)");
@@ -40,17 +39,17 @@ public class GameUI {
         System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
-    /** Prompt and return selected player index: 0=Warrior, 1=Wizard. */
+    /** Prompt and return selected player **/
     public int promptPlayerChoice() {
         System.out.println("\nSelect your player:");
         System.out.println("  1) Warrior");
         System.out.println("  2) Wizard");
-        return inputHandler.promptIndex("Player", 1, 2) - 1;
+        System.out.println("  3) Giant");
+        return inputHandler.promptIndex("Player", 1, 3) - 1;
     }
 
     /**
-     * Prompt and return selected item indices (duplicates allowed).
-     * Returned values are zero-based indices into itemNames.
+     * Prompt and return selected item indices
      */
     public List<Integer> promptItemChoices(List<String> itemNames, int picks) {
         List<Integer> selected = new ArrayList<>();
@@ -101,7 +100,6 @@ public class GameUI {
         return inputHandler.promptIndex("Action", 1, actionNames.size()) - 1;
     }
 
-    /** Enhanced action prompt showing cooldown and item status. */
     public int promptActionChoice(List<String> actionNames, int cooldown, int itemsRemaining) {
         System.out.println("\nCooldown: " + (cooldown > 0 ? cooldown + " turn(s)" : "Ready"));
         System.out.println("Items remaining: " + itemsRemaining);
@@ -124,7 +122,7 @@ public class GameUI {
         System.out.println(message);
     }
 
-    /** Display victory screen. */
+    /** victory screen. */
     public void showVictoryScreen(int remainingHP, int maxHP, int totalRounds) {
         System.out.println("\n=== Victory ===");
         System.out.println("Congratulations, you have defeated all your enemies.");
@@ -133,7 +131,7 @@ public class GameUI {
         System.out.println("Choose next: replay / new game / exit");
     }
 
-    /** Display defeat screen. */
+    /** defeat screen. */
     public void showDefeatScreen(int enemiesRemaining, int totalRounds) {
         System.out.println("\n=== Defeat ===");
         System.out.println("Defeated. Don't give up, try again!");
@@ -144,7 +142,7 @@ public class GameUI {
         System.out.println("Option to exit");
     }
 
-    /** Prompt and return post-game option index: 0=replay, 1=new game, 2=exit. */
+    /** Prompt and return post-game option **/
     public int promptPostGameChoice() {
         System.out.println("\nChoose next:");
         System.out.println("  1) Replay same settings");
