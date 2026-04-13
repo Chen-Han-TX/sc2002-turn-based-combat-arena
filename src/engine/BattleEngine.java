@@ -347,6 +347,8 @@ public class BattleEngine {
             return;
         }
 
+        combatant.triggerPassive();
+
         if (combatant.isPlayer()) {
             processPlayerTurn();
         } else {
