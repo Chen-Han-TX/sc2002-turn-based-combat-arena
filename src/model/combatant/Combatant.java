@@ -113,6 +113,10 @@ public abstract class Combatant {
         this.attack += amount;
     }
 
+    public void passiveAbility(){
+        
+    }
+
     // --- Abstract ---
     public abstract boolean isPlayer();
 
