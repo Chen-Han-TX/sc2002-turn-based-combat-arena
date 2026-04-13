@@ -27,6 +27,13 @@ public class Wizard extends Combatant {
         return new ArcaneBlast();
     }
 
+    @Override 
+    public void passiveAbility() {
+        modifyAttack(1);{
+        System.out.println(getName() + "'s passive activated. Attack +1.");
+        }
+    }
+
     /**
      * Special Skill: Arcane Blast
      * Hits all living enemies.
