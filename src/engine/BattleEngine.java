@@ -1,174 +1,3 @@
-//package engine;
-//
-//import model.combatant.Combatant;
-//import model.action.BasicAttack;
-//import java.util.List;
-//import java.util.ArrayList;
-//
-///**
-// * Owner: Person D
-// * Core battle loop: manages rounds, turns, win/lose conditions.
-// * Simple version based on Combatant + TurnOrderStrategy.
-// */
-//public class BattleEngine {
-//    private Combatant player;
-//    private List<Combatant> enemies;
-//    private List<Combatant> backupSpawn;
-//    private TurnOrderStrategy turnOrderStrategy;
-//    private int roundNumber;
-//    private boolean battleOver;
-//
-//    public BattleEngine(Combatant player, List<Combatant> enemies,
-//                        List<Combatant> backupSpawn, TurnOrderStrategy strategy) {
-//        this.player = player;
-//        this.enemies = new ArrayList<>(enemies);
-//        this.backupSpawn = (backupSpawn != null) ? new ArrayList<>(backupSpawn) : new ArrayList<>();
-//        this.turnOrderStrategy = strategy;
-//        this.roundNumber = 0;
-//        this.battleOver = false;
-//    }
-//
-//    /**
-//     * Starts the battle loop.
-//     * Current simple behavior:
-//     * - player basic-attacks first alive enemy
-//     * - each alive enemy basic-attacks player
-//     * - turn order is determined by strategy
-//     */
-//    public void startBattle() {
-//        BasicAttack attack = new BasicAttack();
-//
-//        while (!battleOver) {
-//            roundNumber++;
-//            System.out.println("\n--- Round " + roundNumber + " ---");
-//
-//            List<Combatant> turnOrder = new ArrayList<>();
-//
-//            if (player.isAlive()) {
-//                turnOrder.add(player);
-//            }
-//
-//            for (Combatant enemy : enemies) {
-//                if (enemy.isAlive()) {
-//                    turnOrder.add(enemy);
-//                }
-//            }
-//
-//            turnOrder = turnOrderStrategy.determineTurnOrder(turnOrder);
-//
-//            for (Combatant combatant : turnOrder) {
-//                if (!combatant.isAlive()) {
-//                    continue;
-//                }
-//
-//                if (isPlayerDefeated() || isPlayerVictory()) {
-//                    battleOver = true;
-//                    break;
-//                }
-//
-//                if (combatant.isPlayer()) {
-//                    Combatant target = getFirstAliveEnemy();
-//                    if (target != null) {
-//                        attack.execute(combatant, target, enemies);
-//                    }
-//                } else {
-//                    if (player.isAlive()) {
-//                        attack.execute(combatant, player, enemies);
-//                    }
-//                }
-//
-//                removeExpiredEffects();
-//
-//                if (isPlayerDefeated() || isPlayerVictory()) {
-//                    battleOver = true;
-//                    break;
-//                }
-//            }
-//
-//            spawnBackupIfNeeded();
-//
-//            if (isPlayerDefeated() || isPlayerVictory()) {
-//                battleOver = true;
-//            }
-//        }
-//
-//        if (isPlayerVictory()) {
-//            System.out.println("\nPlayer wins!");
-//        } else if (isPlayerDefeated()) {
-//            System.out.println("\nPlayer loses!");
-//        }
-//    }
-//
-//    /**
-//     * Returns the first alive enemy, or null if none exist.
-//     */
-//    private Combatant getFirstAliveEnemy() {
-//        for (Combatant enemy : enemies) {
-//            if (enemy.isAlive()) {
-//                return enemy;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Returns the current round number.
-//     */
-//    public int getRoundNumber() {
-//        return roundNumber;
-//    }
-//
-//    /**
-//     * Returns true if the player is defeated.
-//     */
-//    public boolean isPlayerDefeated() {
-//        return !player.isAlive();
-//    }
-//
-//    /**
-//     * Returns true if all enemies are defeated.
-//     */
-//    public boolean isPlayerVictory() {
-//        for (Combatant enemy : enemies) {
-//            if (enemy.isAlive()) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * Removes expired status effects from player and enemies.
-//     */
-//    private void removeExpiredEffects() {
-//        player.removeExpiredEffects();
-//
-//        for (Combatant enemy : enemies) {
-//            enemy.removeExpiredEffects();
-//        }
-//    }
-//
-//    /**
-//     * If all current enemies are defeated and backup enemies exist,
-//     * spawn them once.
-//     */
-//    private void spawnBackupIfNeeded() {
-//        if (isPlayerVictory() && !backupSpawn.isEmpty()) {
-//            enemies.addAll(backupSpawn);
-//            backupSpawn.clear();
-//            battleOver = false;
-//            System.out.println("Backup enemies appeared!");
-//        }
-//    }
-//
-//    public Combatant getPlayer() {
-//        return player;
-//    }
-//
-//    public List<Combatant> getEnemies() {
-//        return enemies;
-//    }
-//}
 
 package engine;
 
@@ -210,6 +39,7 @@ public class BattleEngine {
     private final TurnOrderStrategy turnOrderStrategy;
     private final GameUI ui;
     private final List<Item> playerItems;
+    private final boolean showEndScreens;
 
     private int roundNumber;
     private boolean battleOver;
@@ -225,33 +55,34 @@ public class BattleEngine {
      * Interactive constructor for actual gameplay.
      */
     public BattleEngine(Combatant player,
-                        List<Combatant> enemies,
-                        List<Combatant> backupSpawn,
-                        List<Item> playerItems,
-                        TurnOrderStrategy strategy,
-                        GameUI ui) {
-        this.player = player;
-        this.enemies = new ArrayList<>(enemies);
-        this.backupSpawn = (backupSpawn != null) ? new ArrayList<>(backupSpawn) : new ArrayList<>();
-        this.playerItems = (playerItems != null) ? new ArrayList<>(playerItems) : new ArrayList<>();
-        this.turnOrderStrategy = strategy;
-        this.ui = ui;
+            List<Combatant> enemies,
+            List<Combatant> backupSpawn,
+            List<Item> playerItems,
+            TurnOrderStrategy strategy,
+            GameUI ui,
+            boolean showEndScreens) {
+		this.player = player;
+		this.enemies = new ArrayList<>(enemies);
+		this.backupSpawn = (backupSpawn != null) ? new ArrayList<>(backupSpawn) : new ArrayList<>();
+		this.playerItems = (playerItems != null) ? new ArrayList<>(playerItems) : new ArrayList<>();
+		this.turnOrderStrategy = strategy;
+		this.ui = ui;
+		this.showEndScreens = showEndScreens;
+		
+		this.roundNumber = 0;
+		this.battleOver = false;
+		this.backupSpawnTriggered = false;
+		this.playerSpecialCooldown = 0;
+		}
 
-        this.roundNumber = 0;
-        this.battleOver = false;
-        this.backupSpawnTriggered = false;
-        this.playerSpecialCooldown = 0;
-    }
-
-    /**
-     * Backward-compatible constructor for simpler testing.
-     */
     public BattleEngine(Combatant player,
-                        List<Combatant> enemies,
-                        List<Combatant> backupSpawn,
-                        TurnOrderStrategy strategy) {
-        this(player, enemies, backupSpawn, new ArrayList<>(), strategy, new GameUI());
-    }
+            List<Combatant> enemies,
+            List<Combatant> backupSpawn,
+            List<Item> playerItems,
+            TurnOrderStrategy strategy,
+            GameUI ui) {
+		this(player, enemies, backupSpawn, playerItems, strategy, ui, true);
+		}
 
     public void startBattle() {
         while (!battleOver) {
@@ -313,7 +144,9 @@ public class BattleEngine {
             ui.showRoundEnd(player, enemies);
         }
 
-        showBattleResult();
+        if (showEndScreens) {
+            showBattleResult();
+        }
     }
 
     private List<Combatant> buildTurnOrder() {
@@ -347,7 +180,7 @@ public class BattleEngine {
             return;
         }
 
-        combatant.triggerPassive();
+        combatant.passiveAbility();
 
         if (combatant.isPlayer()) {
             processPlayerTurn();

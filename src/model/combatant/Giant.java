@@ -23,11 +23,11 @@ public class Giant extends Combatant {
     public Action getSpecialSkill() {
         return new DoubleSmash();
     }
-    @Override 
+    @Override
     public void passiveAbility() {
         if (getCurrentHP() < getMaxHP()) {
             heal(3);
-            System.out.println(getName() + "'s passive activated. Defence +1.");            
+            System.out.println(getName() + "'s passive activated. Healed 3 HP.");
         }
     }
 }
