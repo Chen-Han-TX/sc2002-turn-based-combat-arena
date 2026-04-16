@@ -1,5 +1,6 @@
 import engine.BattleEngine;
 import engine.SpeedBasedOrder;
+import engine.SurvivalGameRunner;
 import model.combatant.Combatant;
 import model.combatant.Giant;
 import model.combatant.Goblin;
@@ -14,6 +15,7 @@ import ui.GameUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -34,53 +36,52 @@ public class Main {
 
     private static void runInteractiveGame() {
         GameUI ui = new GameUI();
+        Scanner scanner = new Scanner(System.in);
 
         boolean running = true;
 
         while (running) {
             ui.showLoadingScreen();
 
+            int modeChoice = promptGameMode(scanner);
+
             Combatant player = createPlayer(ui.promptPlayerChoice());
             List<Item> items = createItemsFromChoices(
                     ui.promptItemChoices(List.of("Potion", "Power Stone", "Smoke Bomb"), 2)
             );
 
-            int difficulty = ui.promptDifficultyChoice();
+            if (modeChoice == 2) {
+                SurvivalGameRunner survivalRunner = new SurvivalGameRunner(
+                        player,
+                        items,
+                        new SpeedBasedOrder(),
+                        ui
+                );
+                survivalRunner.start();
+            } else {
+                int difficulty = ui.promptDifficultyChoice();
 
-            List<Combatant> initialEnemies = createInitialEnemies(difficulty);
-            List<Combatant> backupEnemies = createBackupEnemies(difficulty);
+                List<Combatant> initialEnemies = createInitialEnemies(difficulty);
+                List<Combatant> backupEnemies = createBackupEnemies(difficulty);
 
-            BattleEngine engine = new BattleEngine(
-                    player,
-                    initialEnemies,
-                    backupEnemies,
-                    items,
-                    new SpeedBasedOrder(),
-                    ui
-            );
+                BattleEngine engine = new BattleEngine(
+                        player,
+                        initialEnemies,
+                        backupEnemies,
+                        items,
+                        new SpeedBasedOrder(),
+                        ui,
+                        true
+                );
 
-            engine.startBattle();
+                engine.startBattle();
+            }
 
             int nextChoice = ui.promptPostGameChoice();
 
             if (nextChoice == 0) {
-                // replay same settings
-                BattleEngine replayEngine = new BattleEngine(
-                        recreatePlayer(player),
-                        recreateEnemies(initialEnemies),
-                        recreateEnemies(backupEnemies),
-                        recreateItems(items),
-                        new SpeedBasedOrder(),
-                        ui
-                );
-                replayEngine.startBattle();
-
-                int afterReplay = ui.promptPostGameChoice();
-                if (afterReplay == 1) {
-                    continue;
-                } else if (afterReplay == 2) {
-                    running = false;
-                }
+                ui.showActionResult("Replay same settings is not enabled for Survival Mode yet. Starting new game instead.");
+                continue;
             } else if (nextChoice == 1) {
                 continue;
             } else {
@@ -91,19 +92,31 @@ public class Main {
         System.out.println("Thanks for playing!");
     }
 
+    private static int promptGameMode(Scanner scanner) {
+        while (true) {
+            System.out.println("\nChoose game mode:");
+            System.out.println("  1) Classic Mode");
+            System.out.println("  2) Survival Mode");
+            System.out.print("Mode (1-2): ");
+
+            String raw = scanner.nextLine().trim();
+
+            try {
+                int choice = Integer.parseInt(raw);
+                if (choice == 1 || choice == 2) {
+                    return choice;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+
+            System.out.println("Invalid input. Enter 1 or 2.");
+        }
+    }
+
     private static Combatant createPlayer(int choice) {
         if (choice == 0) {
             return new Warrior();
         } else if (choice == 1) {
-            return new Wizard();
-        }
-        return new Giant();
-    }
-
-    private static Combatant recreatePlayer(Combatant player) {
-        if (player instanceof Warrior) {
-            return new Warrior();
-        } else if (player instanceof Wizard) {
             return new Wizard();
         }
         return new Giant();
@@ -131,42 +144,23 @@ public class Main {
         return items;
     }
 
-    private static List<Item> recreateItems(List<Item> oldItems) {
-        List<Item> items = new ArrayList<>();
-
-        for (Item item : oldItems) {
-            if (item instanceof Potion) {
-                items.add(new Potion());
-            } else if (item instanceof PowerStone) {
-                items.add(new PowerStone());
-            } else if (item instanceof SmokeBomb) {
-                items.add(new SmokeBomb());
-            }
-        }
-
-        return items;
-    }
-
     private static List<Combatant> createInitialEnemies(int difficulty) {
         List<Combatant> enemies = new ArrayList<>();
 
         switch (difficulty) {
-            case 0: // Easy
+            case 0:
                 enemies.add(new Goblin("Goblin A"));
                 enemies.add(new Goblin("Goblin B"));
                 enemies.add(new Goblin("Goblin C"));
                 break;
-
-            case 1: // Medium
+            case 1:
                 enemies.add(new Goblin("Goblin A"));
                 enemies.add(new Wolf("Wolf A"));
                 break;
-
-            case 2: // Hard
+            case 2:
                 enemies.add(new Goblin("Goblin A"));
                 enemies.add(new Goblin("Goblin B"));
                 break;
-
             default:
                 enemies.add(new Goblin("Goblin A"));
                 enemies.add(new Goblin("Goblin B"));
@@ -181,38 +175,21 @@ public class Main {
         List<Combatant> backup = new ArrayList<>();
 
         switch (difficulty) {
-            case 0: // Easy
+            case 0:
                 break;
-
-            case 1: // Medium
+            case 1:
                 backup.add(new Wolf("Wolf B"));
                 backup.add(new Wolf("Wolf C"));
                 break;
-
-            case 2: // Hard
+            case 2:
                 backup.add(new Goblin("Goblin C"));
                 backup.add(new Wolf("Wolf A"));
                 backup.add(new Wolf("Wolf B"));
                 break;
-
             default:
                 break;
         }
 
         return backup;
-    }
-
-    private static List<Combatant> recreateEnemies(List<Combatant> oldEnemies) {
-        List<Combatant> newEnemies = new ArrayList<>();
-
-        for (Combatant enemy : oldEnemies) {
-            if (enemy instanceof Goblin) {
-                newEnemies.add(new Goblin(enemy.getName()));
-            } else if (enemy instanceof Wolf) {
-                newEnemies.add(new Wolf(enemy.getName()));
-            }
-        }
-
-        return newEnemies;
     }
 }

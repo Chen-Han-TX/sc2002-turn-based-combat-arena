@@ -25,6 +25,13 @@ public class Warrior extends Combatant {
         return new ShieldBash();
     }
 
+    @Override
+    public void passiveAbility() {
+        modifyDefense(1);
+        System.out.println(getName() + "'s passive activated. Defense +1.");
+    }
+        
+
     // TODO: Add any Warrior-specific methods if needed
     
     public void shieldBash(Combatant target) {
