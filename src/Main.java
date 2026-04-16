@@ -37,16 +37,40 @@ public class Main {
         GameUI ui = new GameUI();
 
         boolean running = true;
+        boolean replayRequested = false;
+
+        // Saved choices for replay — null until a game has been completed
+        Integer savedMode = null;
+        Integer savedPlayerChoice = null;
+        List<Integer> savedItemChoices = null;
+        Integer savedDifficulty = null;
 
         while (running) {
             ui.showLoadingScreen();
 
-            int modeChoice = ui.promptGameMode();
+            int modeChoice;
+            int playerChoice;
+            List<Integer> itemChoices;
+            int difficulty = -1;
 
-            Combatant player = createPlayer(ui.promptPlayerChoice());
-            List<Item> items = createItemsFromChoices(
-                    ui.promptItemChoices(List.of("Potion", "Power Stone", "Smoke Bomb"), 2)
-            );
+            if (replayRequested && savedMode != null) {
+                // Re-use the saved choices without prompting the player again
+                modeChoice = savedMode;
+                playerChoice = savedPlayerChoice;
+                itemChoices = new ArrayList<>(savedItemChoices);
+                if (savedDifficulty != null) {
+                    difficulty = savedDifficulty;
+                }
+                replayRequested = false;
+                ui.showActionResult("Replaying with the same settings...");
+            } else {
+                modeChoice = ui.promptGameMode();
+                playerChoice = ui.promptPlayerChoice();
+                itemChoices = ui.promptItemChoices(List.of("Potion", "Power Stone", "Smoke Bomb"), 2);
+            }
+
+            Combatant player = createPlayer(playerChoice);
+            List<Item> items = createItemsFromChoices(itemChoices);
 
             if (modeChoice == 2) {
                 SurvivalGameRunner survivalRunner = new SurvivalGameRunner(
@@ -57,7 +81,9 @@ public class Main {
                 );
                 survivalRunner.start();
             } else {
-                int difficulty = ui.promptDifficultyChoice();
+                if (difficulty == -1) {
+                    difficulty = ui.promptDifficultyChoice();
+                }
 
                 List<Combatant> initialEnemies = createInitialEnemies(difficulty);
                 List<Combatant> backupEnemies = createBackupEnemies(difficulty);
@@ -75,12 +101,20 @@ public class Main {
                 engine.startBattle();
             }
 
+            // Persist choices so replay can reuse them
+            savedMode = modeChoice;
+            savedPlayerChoice = playerChoice;
+            savedItemChoices = new ArrayList<>(itemChoices);
+            savedDifficulty = (modeChoice != 2) ? difficulty : null;
+
             int nextChoice = ui.promptPostGameChoice();
 
             if (nextChoice == 0) {
-                continue; // New game
+                replayRequested = true;   // Replay same settings
+            } else if (nextChoice == 1) {
+                // New game — fall through to re-prompt at top of loop
             } else {
-                running = false; // Exit
+                running = false;
             }
         }
 

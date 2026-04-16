@@ -136,6 +136,7 @@ public class GameUI {
         System.out.println("Congratulations, you have defeated all your enemies.");
         System.out.println("Statistics: Remaining HP: " + remainingHP + "/" + maxHP
                 + " | Total Rounds: " + totalRounds);
+        System.out.println("Options: replay same settings / start a new game / exit");
     }
 
     /** defeat screen. */
@@ -144,13 +145,18 @@ public class GameUI {
         System.out.println("Defeated. Don't give up, try again!");
         System.out.println("Statistics: Enemies remaining: " + enemiesRemaining
                 + " | Total Rounds Survived: " + totalRounds);
+        System.out.println("Options: replay same settings / start a new game / exit");
     }
 
-    /** Prompt and return post-game option: 0 = New game, 1 = Exit. */
+    /**
+     * Prompt and return post-game option.
+     * Returns: 0 = Replay same settings, 1 = New game, 2 = Exit.
+     */
     public int promptPostGameChoice() {
         System.out.println("\nChoose next:");
-        System.out.println("  1) New game");
-        System.out.println("  2) Exit");
-        return inputHandler.promptIndex("Menu", 1, 2) - 1;
+        System.out.println("  1) Replay same settings");
+        System.out.println("  2) New game");
+        System.out.println("  3) Exit");
+        return inputHandler.promptIndex("Menu", 1, 3) - 1;
     }
 }
