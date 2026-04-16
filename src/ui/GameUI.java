@@ -39,6 +39,14 @@ public class GameUI {
         System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
+    /** Prompt and return selected game mode: 1=Classic, 2=Survival. */
+    public int promptGameMode() {
+        System.out.println("\nChoose game mode:");
+        System.out.println("  1) Classic Mode");
+        System.out.println("  2) Survival Mode");
+        return inputHandler.promptIndex("Mode", 1, 2);
+    }
+
     /** Prompt and return selected player **/
     public int promptPlayerChoice() {
         System.out.println("\nSelect your player:");
@@ -128,7 +136,7 @@ public class GameUI {
         System.out.println("Congratulations, you have defeated all your enemies.");
         System.out.println("Statistics: Remaining HP: " + remainingHP + "/" + maxHP
                 + " | Total Rounds: " + totalRounds);
-        System.out.println("Choose next: replay / new game / exit");
+        System.out.println("Options: replay same settings / start a new game / exit");
     }
 
     /** defeat screen. */
@@ -137,12 +145,13 @@ public class GameUI {
         System.out.println("Defeated. Don't give up, try again!");
         System.out.println("Statistics: Enemies remaining: " + enemiesRemaining
                 + " | Total Rounds Survived: " + totalRounds);
-        System.out.println("Option to replay with the same settings");
-        System.out.println("Option to start a new game (return to the home screen)");
-        System.out.println("Option to exit");
+        System.out.println("Options: replay same settings / start a new game / exit");
     }
 
-    /** Prompt and return post-game option **/
+    /**
+     * Prompt and return post-game option.
+     * Returns: 0 = Replay same settings, 1 = New game, 2 = Exit.
+     */
     public int promptPostGameChoice() {
         System.out.println("\nChoose next:");
         System.out.println("  1) Replay same settings");

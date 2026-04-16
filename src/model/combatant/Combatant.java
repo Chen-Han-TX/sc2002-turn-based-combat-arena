@@ -19,7 +19,6 @@ public abstract class Combatant {
     protected int defense;
     protected int speed;
     protected List<StatusEffect> statusEffects;
-    protected boolean alive;
 
     public Combatant(String name, int hp, int attack, int defense, int speed) {
         this.name = name;
@@ -29,7 +28,6 @@ public abstract class Combatant {
         this.defense = defense;
         this.speed = speed;
         this.statusEffects = new ArrayList<>();
-        this.alive = true;
     }
 
     // --- Basic Getters ---
@@ -62,18 +60,10 @@ public abstract class Combatant {
     public void takeDamage(int damage) {
         int actualDamage = Math.max(0, damage - getDefense());
         currentHP = Math.max(0, currentHP - actualDamage);
-
-        if (currentHP == 0) {
-            alive = false;
-        }
     }
 
     public void takeRawDamage(int damage) {
         currentHP = Math.max(0, currentHP - damage);
-
-        if (currentHP == 0) {
-            alive = false;
-        }
     }
 
     public void heal(int amount) {
