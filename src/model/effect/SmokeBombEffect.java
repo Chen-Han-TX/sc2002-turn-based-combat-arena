@@ -46,14 +46,4 @@ public class SmokeBombEffect implements StatusEffect {
         // No cleanup needed
     }
 
-    /**
-     * Helper method for engine/combatant logic.
-     * If this effect is active, incoming damage should become 0.
-     */
-    public int modifyIncomingDamage(int damage) {
-        if (!isExpired()) {
-            return 0;
-        }
-        return damage;
-    }
 }

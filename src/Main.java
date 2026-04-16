@@ -78,12 +78,9 @@ public class Main {
             int nextChoice = ui.promptPostGameChoice();
 
             if (nextChoice == 0) {
-                ui.showActionResult("Replay same settings is not enabled for Survival Mode yet. Starting new game instead.");
-                continue;
-            } else if (nextChoice == 1) {
-                continue;
+                continue; // New game
             } else {
-                running = false;
+                running = false; // Exit
             }
         }
 
