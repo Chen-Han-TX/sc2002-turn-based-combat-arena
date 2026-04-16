@@ -46,7 +46,7 @@ All special skills have a **3-turn cooldown**, decrementing only on turns the co
 | Goblin | 55 | 35 | 15 | 25 |
 | Wolf   | 40 | 45 |  5 | 35 |
 
-Enemies always perform BasicAttack. Selection is routed through `Combatant.chooseAction()` so new AI strategies can be added without modifying `BattleEngine`.
+Enemies always perform BasicAttack. The `Action` interface is the extension point — new enemy AI strategies can be added by implementing `Action` without modifying `BattleEngine`.
 
 ### Actions, Items, Effects
 
