@@ -39,6 +39,14 @@ public class GameUI {
         System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
+    /** Prompt and return selected game mode: 1=Classic, 2=Survival. */
+    public int promptGameMode() {
+        System.out.println("\nChoose game mode:");
+        System.out.println("  1) Classic Mode");
+        System.out.println("  2) Survival Mode");
+        return inputHandler.promptIndex("Mode", 1, 2);
+    }
+
     /** Prompt and return selected player **/
     public int promptPlayerChoice() {
         System.out.println("\nSelect your player:");

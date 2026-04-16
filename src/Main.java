@@ -15,7 +15,6 @@ import ui.GameUI;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
@@ -36,14 +35,13 @@ public class Main {
 
     private static void runInteractiveGame() {
         GameUI ui = new GameUI();
-        Scanner scanner = new Scanner(System.in);
 
         boolean running = true;
 
         while (running) {
             ui.showLoadingScreen();
 
-            int modeChoice = promptGameMode(scanner);
+            int modeChoice = ui.promptGameMode();
 
             Combatant player = createPlayer(ui.promptPlayerChoice());
             List<Item> items = createItemsFromChoices(
@@ -90,27 +88,6 @@ public class Main {
         }
 
         System.out.println("Thanks for playing!");
-    }
-
-    private static int promptGameMode(Scanner scanner) {
-        while (true) {
-            System.out.println("\nChoose game mode:");
-            System.out.println("  1) Classic Mode");
-            System.out.println("  2) Survival Mode");
-            System.out.print("Mode (1-2): ");
-
-            String raw = scanner.nextLine().trim();
-
-            try {
-                int choice = Integer.parseInt(raw);
-                if (choice == 1 || choice == 2) {
-                    return choice;
-                }
-            } catch (NumberFormatException ignored) {
-            }
-
-            System.out.println("Invalid input. Enter 1 or 2.");
-        }
     }
 
     private static Combatant createPlayer(int choice) {
