@@ -1,12 +1,16 @@
 # SC2002 Turn-Based Combat Arena
 
-A CLI turn-based combat game built in Java for **SC2002 Object-Oriented Design & Programming** (AY25/26 Sem 2, NTU). The project demonstrates SOLID design principles, UML modeling, and clean layered architecture through an extensible combat system.
+A CLI turn-based combat game built in Java for **SC2002 Object-Oriented Design & Programming** (AY25/26 Sem 2, NTU). Demonstrates SOLID principles and a clean Boundary–Control–Entity architecture.
+
+**Lab Group:** FDAD · **Group:** 1
+**Team:** Anthony Lin Zihan · Cha Heng Ping · Chen Han · Chew Qi Siang · Chloe Seah Hsueh Ern
+**Repo:** https://github.com/Chen-Han-TX/sc2002-turn-based-combat-arena
 
 ---
 
 ## How to Run
 
-**Requires:** Java 17+
+**Requires:** Java 17+ (JDK).
 
 ```bash
 cd src
@@ -14,124 +18,122 @@ javac Main.java
 java Main --interactive
 ```
 
-Running without `--interactive` prints the title and exits (smoke test mode).
+---
 
-## Game Overview
+## Gameplay
 
-A player (Warrior, Wizard, or Giant) battles waves of enemies (Goblins and Wolves) across three difficulty levels. Each round, combatants act in speed order. The player wins by eliminating all enemies; the player loses if their HP reaches zero.
+1. Pick **game mode** → Classic or Survival
+2. Pick **player** → Warrior, Wizard, or Giant *(additional)*
+3. Pick **2 items** → Potion / Power Stone / Smoke Bomb (duplicates allowed)
+4. Pick **difficulty** (Classic only) → Easy / Medium / Hard
 
-### Setup Phase
-
-1. Choose a player class (Warrior, Wizard, or Giant)
-2. Pick 2 items from: Potion, Power Stone, Smoke Bomb (duplicates allowed)
-3. Select difficulty: Easy, Medium, or Hard
+Each round, combatants act in descending speed order. The player wins by eliminating all enemies; loses at 0 HP. After an initial wave is defeated, backup enemies (if any) enter simultaneously.
 
 ### Players
 
-| Player | HP | ATK | DEF | SPD | Special Skill |
-|--------|----|-----|-----|-----|---------------|
-| **Warrior** | 260 | 40 | 20 | 30 | **Shield Bash** — deals ATK damage to one target and stuns it for the current turn and next turn |
-| **Wizard** | 200 | 50 | 10 | 20 | **Arcane Blast** — hits all enemies; each enemy killed adds +10 ATK for the rest of the level |
-| **Giant** | 400 | 35 | 20 | 10 | **Double Smash** — attacks the same target twice in a single turn |
+| Player | HP | ATK | DEF | SPD | Special Skill | Passive *(additional)* |
+|--------|----|-----|-----|-----|---------------|------------------------|
+| **Warrior** | 260 | 40 | 20 | 30 | **Shield Bash** — damage + stun target for 2 turns | +1 DEF/round |
+| **Wizard**  | 200 | 50 | 10 | 20 | **Arcane Blast** — AoE; +10 ATK (until end of level) per kill | +1 ATK/round |
+| **Giant** *(additional)* | 400 | 35 | 20 | 10 | **Double Smash** — attack same target twice | +3 HP heal/round |
 
-All special skills share a **3-turn cooldown**.
+All special skills have a **3-turn cooldown**, decrementing only on turns the combatant actually takes.
 
-### Combat Actions
+### Enemies
 
-| Action | Description |
-|--------|-------------|
-| **Basic Attack** | `damage = max(0, ATK - target DEF)` on one target |
-| **Defend** | +10 DEF for current round and next round |
-| **Special Skill** | Class-specific ability (see table above). 3-turn cooldown. |
-| **Use Item** | Potion (heal 100 HP), Power Stone (free special skill, no cooldown change), Smoke Bomb (enemies deal 0 damage for 2 turns) |
+| Enemy | HP | ATK | DEF | SPD |
+|-------|----|-----|-----|-----|
+| Goblin | 55 | 35 | 15 | 25 |
+| Wolf   | 40 | 45 |  5 | 35 |
 
-### Difficulty Levels
+Enemies always perform BasicAttack. Selection is routed through `Combatant.chooseAction()` so new AI strategies can be added without modifying `BattleEngine`.
 
-| Level | Initial Enemies | Backup Spawn |
-|-------|----------------|--------------|
-| Easy | 3 Goblins | None |
-| Medium | 1 Goblin + 1 Wolf | 2 Wolves |
-| Hard | 2 Goblins | 1 Goblin + 2 Wolves |
+### Actions, Items, Effects
 
-Backup enemies spawn after the initial wave is fully defeated.
+| Action | Effect |
+|--------|--------|
+| BasicAttack | `max(0, ATK − targetDEF)` damage |
+| Defend | +10 DEF for current + next round |
+| SpecialSkill | Class-specific; 3-turn cooldown |
+| Item | Consume one of your 2 chosen items |
+
+| Item | Effect |
+|------|--------|
+| Potion | Heal 100 HP (capped at Max) |
+| Power Stone | Free special skill use, no cooldown change |
+| Smoke Bomb | Enemy attacks deal 0 damage for 2 turns |
+
+| Status Effect | Duration |
+|---------------|----------|
+| Stun | 2 turns (prevents action) |
+| DefendBuff | 2 turns (+10 DEF) |
+| SmokeBombEffect | 2 turns (nullifies incoming damage) |
+| ArcaneBlastEffect | Until end of level (+10 ATK per stack) |
+
+### Difficulty
+
+| Level | Initial Wave | Backup Wave |
+|-------|--------------|-------------|
+| Easy   | 3 Goblins          | — |
+| Medium | 1 Goblin + 1 Wolf  | 2 Wolves |
+| Hard   | 2 Goblins          | 1 Goblin + 2 Wolves |
+
+### Survival Mode *(additional)*
+
+Endless wave-based mode driven by the `GameMode` interface and `SurvivalGameRunner`. Waves scale in composition; HP and skill buffs persist across waves; player heals +30 HP after each cleared wave. Run ends at 0 HP with stats for waves survived and total enemies defeated. Added without modifying `BattleEngine`.
 
 ---
 
-## Project Architecture
+## Architecture
 
 ```
 src/
-├── Main.java                          <- Entry point + game loop
-├── model/
-│   ├── combatant/
-│   │   ├── Combatant.java             <- Abstract base (shared contract)
-│   │   ├── Warrior.java               <- Player class (Shield Bash)
-│   │   ├── Wizard.java                <- Player class (Arcane Blast)
-│   │   ├── Giant.java                 <- Player class (Double Smash)
-│   │   ├── Goblin.java                <- Enemy (HP:55 ATK:35 DEF:15 SPD:25)
-│   │   └── Wolf.java                  <- Enemy (HP:40 ATK:45 DEF:5 SPD:35)
-│   ├── action/
-│   │   ├── Action.java                <- Interface (needsTarget() default method)
-│   │   ├── BasicAttack.java
-│   │   ├── Defend.java
-│   │   ├── ShieldBash.java
-│   │   ├── ArcaneBlast.java
-│   │   └── DoubleSmash.java           <- Giant special skill
-│   ├── item/
-│   │   ├── Item.java                  <- Interface (shared contract)
-│   │   ├── Potion.java
-│   │   ├── PowerStone.java
-│   │   └── SmokeBomb.java
-│   └── effect/
-│       ├── StatusEffect.java          <- Interface (shared contract)
-│       ├── StunEffect.java
-│       ├── DefendBuff.java
-│       ├── SmokeBombEffect.java
-│       └── ArcaneBlastEffect.java
-├── engine/
-│   ├── TurnOrderStrategy.java         <- Interface (shared contract)
-│   ├── SpeedBasedOrder.java           <- Sorts by speed descending
-│   └── BattleEngine.java             <- Round loop, turns, win/lose logic
-└── ui/
-    ├── GameUI.java                    <- All CLI display + input prompts
-    ├── InputHandler.java              <- Input validation
-    └── BattleDisplay.java             <- Formatting helpers
+├── Main.java                      Entry + setup prompts
+│
+├── engine/                        CONTROL (BCE)
+│   ├── BattleEngine               Round loop, turns, win/lose
+│   ├── TurnOrderStrategy          Interface → SpeedBasedOrder
+│   ├── GameMode                   Interface → SurvivalMode
+│   └── SurvivalGameRunner         Drives repeated battles
+│
+├── model/                         ENTITY (BCE)
+│   ├── combatant/                 Combatant (abstract) + Warrior/Wizard/Giant/Goblin/Wolf
+│   ├── action/                    Action interface + BasicAttack/Defend/ShieldBash/ArcaneBlast/DoubleSmash
+│   ├── item/                      Item interface + Potion/PowerStone/SmokeBomb
+│   └── effect/                    StatusEffect interface + Stun/DefendBuff/SmokeBomb/ArcaneBlast effects
+│
+└── ui/                            BOUNDARY (BCE)
+    ├── GameUI                     All screens and prompts
+    ├── InputHandler               Validated numeric input
+    └── BattleDisplay              Combatant formatting
 ```
 
-### Layer Separation (BCE Pattern)
-
-| Layer | Package | Responsibility |
-|-------|---------|---------------|
-| **Boundary** | `ui` | CLI display, user input, formatting |
-| **Control** | `engine` | Battle loop, turn order, win/lose conditions |
-| **Entity** | `model.*` | Combatants, actions, items, status effects |
-The UI layer never contains game rules. The engine depends on abstractions (interfaces), not concrete classes.
+The UI layer contains **no game rules**. The engine depends on abstractions — never on concrete classes.
 
 ---
 
-## SOLID Principles Applied
-| Principle | How It's Applied |
-|-----------|-----------------|
-| **SRP** | Each class has one job: `BasicAttack` handles attack logic, `GameUI` handles display, `BattleEngine` manages the round loop, etc. |
-| **OCP** | New actions or status effects can be added by implementing `Action` / `StatusEffect` without modifying `BattleEngine`. The `getSpecialSkill()` + `needsTarget()` pattern lets the engine handle any future player class. |
-| **LSP** | `Warrior`, `Wizard`, `Giant`, `Goblin`, and `Wolf` are all interchangeable as `Combatant` throughout the engine. |
-| **ISP** | Interfaces are focused: `Action`, `Item`, `StatusEffect`, `TurnOrderStrategy` each define only what their implementors need. |
-| **DIP** | `BattleEngine` depends on `TurnOrderStrategy` (interface), `Action` (interface), and `Combatant` (abstraction). It calls `player.getSpecialSkill()` rather than checking `instanceof`. |
+## SOLID Evidence
+
+| Principle | Applied |
+|-----------|---------|
+| **SRP** | Each class has one job: `BasicAttack` does one attack, `GameUI` only renders/prompts, `BattleEngine` only runs rounds, `SurvivalGameRunner` only drives waves. |
+| **OCP** | New actions, items, effects, combatants, and game modes added by implementing interfaces — zero changes to `BattleEngine`. Giant and Survival Mode were added without touching engine code. |
+| **LSP** | All combatants substitute for `Combatant` everywhere; engine never does `instanceof` on player classes. |
+| **ISP** | Five focused interfaces (`Action`, `Item`, `StatusEffect`, `TurnOrderStrategy`, `GameMode`) rather than one monolith. Each exposes only what its clients need. |
+| **DIP** | `BattleEngine` depends on interfaces only. Turn ordering is injected (`TurnOrderStrategy`) — swapping to random ordering needs no engine changes. |
+
+**Patterns:** Strategy (`TurnOrderStrategy`, `GameMode`), Command (`Action`), Template Method (`Combatant.passiveAbility()`), Composition (`Combatant` ◆→ `StatusEffect*`).
 
 ---
 
 ## Team Responsibilities
-| Person | Package(s) | Key Files |
-|--------|-----------|-----------|
-| **A** | `model/combatant/` | Combatant, Warrior, Wizard, Giant, Goblin, Wolf |
-| **B** | `model/action/` | Action, BasicAttack, Defend, ShieldBash, ArcaneBlast, DoubleSmash |
-| **C** | `model/item/` + `model/effect/` | Potion, PowerStone, SmokeBomb, StunEffect, DefendBuff, SmokeBombEffect, ArcaneBlastEffect |
-| **D** | `engine/` | BattleEngine, SpeedBasedOrder, TurnOrderStrategy |
-| **E** | `ui/` + `Main.java` | GameUI, InputHandler, BattleDisplay, Main |
 
-### Shared Interfaces (agreed by all members)
-- `Combatant.java` — base for all characters
-- `Action.java` — base for all actions (includes `needsTarget()` default method)
-- `Item.java` — base for all items
-- `StatusEffect.java` — base for all effects
-- `TurnOrderStrategy.java` — base for turn ordering
+| Person | Package |
+|--------|---------|
+| Anthony Lin Zihan | `model/combatant/` |
+| Cha Heng Ping | `model/action/` |
+| Chen Han | `model/item/` + `model/effect/` |
+| Chew Qi Siang | `engine/` |
+| Chloe Seah Hsueh Ern | `ui/` + `Main.java` |
+
+Shared interfaces (`Combatant`, `Action`, `Item`, `StatusEffect`, `TurnOrderStrategy`, `GameMode`) require group agreement before modification.
