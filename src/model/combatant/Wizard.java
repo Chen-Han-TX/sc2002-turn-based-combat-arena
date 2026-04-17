@@ -4,7 +4,6 @@ import model.action.Action;
 import model.action.ArcaneBlast;
 
 /**
- * Owner: Person A
  * Wizard player class.
  * HP: 200, Attack: 50, Defense: 10, Speed: 20
  * Special Skill: Arcane Blast

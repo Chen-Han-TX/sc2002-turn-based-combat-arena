@@ -2,9 +2,6 @@ package ui;
 
 import java.util.Scanner;
 
-/**
- * Person E dstuff
- */
 public class InputHandler {
     private final Scanner scanner;
 

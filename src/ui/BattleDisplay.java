@@ -6,9 +6,6 @@ import model.effect.StatusEffect;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Person E stuff
- */
 public final class BattleDisplay {
     private BattleDisplay() {}
 

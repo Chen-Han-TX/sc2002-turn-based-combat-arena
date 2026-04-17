@@ -2,11 +2,7 @@ package model.effect;
 
 import model.combatant.Combatant;
 
-/**
- * Owner: Person C
- * Smoke Bomb effect: incoming enemy attacks deal 0 damage
- * for current turn and next turn.
- */
+
 public class SmokeBombEffect implements StatusEffect {
     private int turnsRemaining;
 

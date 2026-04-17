@@ -25,12 +25,6 @@ import java.util.List;
  * - special skill cooldown
  * - backup spawn
  * - victory / defeat
- *
- * Assumptions for this version:
- * - exactly 1 player
- * - enemies always use BasicAttack
- * - UI is CLI-based through GameUI
- * - items are already chosen before battle starts
  */
 public class BattleEngine {
     private final Combatant player;

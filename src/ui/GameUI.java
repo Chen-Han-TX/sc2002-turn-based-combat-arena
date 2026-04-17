@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Person E Task
-**/
-
 public class GameUI {
     private final InputHandler inputHandler;
 

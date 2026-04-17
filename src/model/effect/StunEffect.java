@@ -2,10 +2,6 @@ package model.effect;
 
 import model.combatant.Combatant;
 
-/**
- * Owner: Person C
- * Stun: Target cannot act for current turn and next turn.
- */
 public class StunEffect implements StatusEffect {
     private int turnsRemaining;
 

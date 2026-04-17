@@ -3,7 +3,6 @@ package model.combatant;
 import model.action.Action;
 
 /**
- * Owner: Person A
  * Wolf enemy class.
  * HP: 40, Attack: 45, Defense: 5, Speed: 35
  */

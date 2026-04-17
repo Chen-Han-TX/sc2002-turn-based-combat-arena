@@ -3,7 +3,6 @@ package model.combatant;
 import model.action.Action;
 
 /**
- * Owner: Person A
  * Goblin enemy class.
  * HP: 55, Attack: 35, Defense: 15, Speed: 25
  */

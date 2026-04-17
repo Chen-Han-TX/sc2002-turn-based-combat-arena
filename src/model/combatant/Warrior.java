@@ -3,7 +3,6 @@ package model.combatant;
 import model.action.Action;
 import model.action.ShieldBash;
 /**
- * Owner: Person A
  * Warrior player class.
  * HP: 260, Attack: 40, Defense: 20, Speed: 30
  * Special Skill: Shield Bash

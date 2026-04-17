@@ -5,7 +5,6 @@ import model.effect.SmokeBombEffect;
 import java.util.List;
 
 /**
- * Owner: Person C
  * Smoke Bomb: Enemy attacks deal 0 damage for current turn and next turn.
  * Single use.
  */
