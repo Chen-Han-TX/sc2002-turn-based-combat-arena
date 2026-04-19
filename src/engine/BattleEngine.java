@@ -1,31 +1,17 @@
 
 package engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import model.action.Action;
 import model.action.BasicAttack;
 import model.action.Defend;
 import model.combatant.Combatant;
 import model.effect.SmokeBombEffect;
 import model.effect.StatusEffect;
-import model.effect.StunEffect;
 import model.item.Item;
 import ui.GameUI;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * BattleEngine
- *
- * Handles:
- * - round loop
- * - turn order
- * - player/enemy turns
- * - status effects
- * - special skill cooldown
- * - backup spawn
- * - victory / defeat
- */
 public class BattleEngine {
     private final Combatant player;
     private final List<Combatant> enemies;
@@ -39,15 +25,8 @@ public class BattleEngine {
     private boolean battleOver;
     private boolean backupSpawnTriggered;
 
-    /**
-     * Cooldown for player special skill.
-     * 0 = usable
-     */
     private int playerSpecialCooldown;
 
-    /**
-     * Interactive constructor for actual gameplay.
-     */
     public BattleEngine(Combatant player,
             List<Combatant> enemies,
             List<Combatant> backupSpawn,
@@ -108,7 +87,6 @@ public class BattleEngine {
                         break;
                     }
 
-                    // backup may have spawned, so stop this round and rebuild order next round
                     break;
                 }
 
@@ -127,12 +105,10 @@ public class BattleEngine {
                         break;
                     }
 
-                    // backup spawned -> next round will rebuild order
                     break;
                 }
             }
 
-            // End-of-round effect ticking
             tickAllEffects();
             removeExpiredEffects();
             ui.showRoundEnd(player, enemies);
@@ -160,15 +136,12 @@ public class BattleEngine {
     }
 
     private void processTurn(Combatant combatant) {
-        // cooldown only decreases when the player's turn happens
         if (combatant == player && playerSpecialCooldown > 0) {
             playerSpecialCooldown--;
         }
 
-        // apply start-of-turn effects
         applyEffectsAtStartOfTurn(combatant);
 
-        // stunned?
         if (isUnableToAct(combatant)) {
             ui.showActionResult(combatant.getName() + " is stunned and skips the turn!");
             return;
@@ -262,10 +235,7 @@ public class BattleEngine {
         new BasicAttack().execute(player, target, enemies);
     }
 
-    /**
-     * consumeCooldown = true for normal special skill usage
-     * consumeCooldown = false for Power Stone usage
-     */
+
     private void performSpecialSkill(boolean consumeCooldown) {
         Action specialSkill = player.getSpecialSkill();
         if (specialSkill == null) {
@@ -273,7 +243,6 @@ public class BattleEngine {
             return;
         }
 
-        // If the skill needs a target (e.g. Shield Bash), prompt for one
         if (specialSkill.needsTarget()) {
             List<Combatant> aliveEnemies = getAliveEnemies();
             if (aliveEnemies.isEmpty()) {
@@ -284,7 +253,6 @@ public class BattleEngine {
             Combatant target = aliveEnemies.get(targetIndex);
             specialSkill.execute(player, target, enemies);
         } else {
-            // AoE skills like Arcane Blast pass null target
             specialSkill.execute(player, null, enemies);
         }
 
@@ -338,7 +306,6 @@ public class BattleEngine {
             return;
         }
 
-        // Smoke Bomb: enemy attacks deal 0 damage
         if (hasActiveSmokeBomb(player)) {
             ui.showActionResult(enemy.getName() + " attacks, but Smoke Bomb reduces the damage to 0!");
             return;

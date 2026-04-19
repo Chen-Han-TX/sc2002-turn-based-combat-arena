@@ -1,13 +1,9 @@
 package model.action;
 
-import model.combatant.Combatant;
 import java.util.List;
+import model.combatant.Combatant;
 
-/**
- * Giant special skill: Double Smash.
- * Performs two consecutive BasicAttack hits on the same target in a single turn.
- * Cooldown follows the standard 3-turn rule managed by BattleEngine.
- */
+//Giant special skill
 public class DoubleSmash implements Action {
 
     @Override
@@ -28,14 +24,12 @@ public class DoubleSmash implements Action {
 
         System.out.println(performer.getName() + " winds up for a Double Smash!");
 
-        // First hit
         int beforeFirst = target.getCurrentHP();
         target.takeDamage(performer.getAttack());
         int firstDamage = beforeFirst - target.getCurrentHP();
         System.out.println("Hit 1: " + performer.getName() + " smashes "
                 + target.getName() + " for " + firstDamage + " damage.");
 
-        // Second hit — only if target is still alive
         if (target.isAlive()) {
             int beforeSecond = target.getCurrentHP();
             target.takeDamage(performer.getAttack());

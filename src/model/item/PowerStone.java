@@ -1,14 +1,13 @@
 package model.item;
 
+import java.util.List;
 import model.action.Action;
 import model.combatant.Combatant;
 
-import java.util.List;
-
 /**
  * Power Stone:
- * Triggers the user's special skill once without changing cooldown.
- * Single use. Works for any player class via getSpecialSkill().
+ * Triggers the user's special skill once without changing cooldown
+ * Single use, works for any player class 
  */
 public class PowerStone implements Item {
     private boolean consumed = false;

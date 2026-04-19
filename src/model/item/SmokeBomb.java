@@ -1,12 +1,11 @@
 package model.item;
 
+import java.util.List;
 import model.combatant.Combatant;
 import model.effect.SmokeBombEffect;
-import java.util.List;
 
 /**
- * Smoke Bomb: Enemy attacks deal 0 damage for current turn and next turn.
- * Single use.
+ * Smoke Bomb: Enemy attacks deal 0 damage for current turn and next turn, single use
  */
 public class SmokeBomb implements Item {
     private boolean consumed = false;

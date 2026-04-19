@@ -10,7 +10,7 @@ public class InputHandler {
     }
 
     /**
-     * Prompt until a valid integer is enter
+     * prompt until a valid integer is entered
      */
     public int promptIndex(String label, int min, int max) {
         while (true) {

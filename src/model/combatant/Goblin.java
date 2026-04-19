@@ -2,10 +2,7 @@ package model.combatant;
 
 import model.action.Action;
 
-/**
- * Goblin enemy class.
- * HP: 55, Attack: 35, Defense: 15, Speed: 25
- */
+//goblin enemy class
 public class Goblin extends Combatant {
 
     public Goblin(String name) {

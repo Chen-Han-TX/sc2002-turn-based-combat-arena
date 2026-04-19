@@ -1,15 +1,9 @@
 package model.action;
 
+import java.util.List;
 import model.combatant.Combatant;
 import model.effect.ArcaneBlastEffect;
 
-import java.util.List;
-
-/**
- * Wizard special skill: Arcane Blast.
- * Hits all living enemies for the performer's full attack value.
- * Each enemy defeated grants the performer +10 attack (via ArcaneBlastEffect).
- */
 public class ArcaneBlast implements Action {
 
     @Override
@@ -44,7 +38,6 @@ public class ArcaneBlast implements Action {
             }
         }
 
-        // Grant +10 attack per enemy defeated via a stacking status effect
         for (int i = 0; i < enemiesDefeated; i++) {
             performer.addStatusEffect(new ArcaneBlastEffect());
         }

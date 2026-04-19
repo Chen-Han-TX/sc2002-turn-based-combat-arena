@@ -1,6 +1,8 @@
 import engine.BattleEngine;
 import engine.SpeedBasedOrder;
 import engine.SurvivalGameRunner;
+import java.util.ArrayList;
+import java.util.List;
 import model.combatant.Combatant;
 import model.combatant.Giant;
 import model.combatant.Goblin;
@@ -12,9 +14,6 @@ import model.item.Potion;
 import model.item.PowerStone;
 import model.item.SmokeBomb;
 import ui.GameUI;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -39,7 +38,7 @@ public class Main {
         boolean running = true;
         boolean replayRequested = false;
 
-        // Saved choices for replay — null until a game has been completed
+        // Saved choices for replay, null until a game has been completed
         Integer savedMode = null;
         Integer savedPlayerChoice = null;
         List<Integer> savedItemChoices = null;
@@ -112,7 +111,7 @@ public class Main {
             if (nextChoice == 0) {
                 replayRequested = true;   // Replay same settings
             } else if (nextChoice == 1) {
-                // New game — fall through to re-prompt at top of loop
+                // New game, fall through to re-prompt at top of loop
             } else {
                 running = false;
             }

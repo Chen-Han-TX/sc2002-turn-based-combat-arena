@@ -4,12 +4,8 @@ import model.combatant.Combatant;
 
 /**
  * Arcane Blast Effect:
- * Each instance represents +10 attack for the Wizard.
+ * Each instance represents +10 attack for the wizard
  * Lasts until the end of the level, so it does not expire by turns.
- *
- * Note:
- * The Wizard class handles the actual bonus by counting how many
- * ArcaneBlastEffect objects are in its statusEffects list.
  */
 public class ArcaneBlastEffect implements StatusEffect {
     private int attackBonus;
@@ -34,15 +30,10 @@ public class ArcaneBlastEffect implements StatusEffect {
 
     @Override
     public void applyEffect(Combatant target) {
-        // Do nothing here.
-        // Wizard.getAttack() already handles the bonus by checking
-        // how many ArcaneBlastEffect objects are active.
     }
 
     @Override
     public void tick() {
-        // Do nothing.
-        // This effect lasts until the end of the level.
     }
 
     @Override
@@ -57,8 +48,5 @@ public class ArcaneBlastEffect implements StatusEffect {
 
     @Override
     public void onExpire(Combatant target) {
-        // Do nothing here.
-        // Since attack is not directly modified in applyEffect(),
-        // there is nothing to undo.
     }
 }

@@ -38,6 +38,5 @@ public class StunEffect implements StatusEffect {
 
     @Override
     public void onExpire(Combatant target) {
-        // No cleanup needed
     }
 }

@@ -1,15 +1,10 @@
 package model.action;
 
+import java.util.List;
 import model.combatant.Combatant;
 import model.effect.StunEffect;
 
-import java.util.List;
 
-/**
- * Warrior special skill:
- * - deals normal attack damage to one target
- * - stuns target for current turn and next turn
- */
 public class ShieldBash implements Action {
 
     @Override

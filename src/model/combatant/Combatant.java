@@ -1,16 +1,12 @@
 package model.combatant;
 
-import model.action.Action;
-import model.effect.StatusEffect;
-import model.effect.ArcaneBlastEffect;
 import java.util.ArrayList;
 import java.util.List;
+import model.action.Action;
+import model.effect.ArcaneBlastEffect;
+import model.effect.StatusEffect;
 
-/**
- * SHARED FILE
- * Base class for all characters (player + enemies).
- * Supports status effects (buffs/debuffs).
- */
+
 public abstract class Combatant {
     protected String name;
     protected int maxHP;
@@ -30,7 +26,6 @@ public abstract class Combatant {
         this.statusEffects = new ArrayList<>();
     }
 
-    // --- Basic Getters ---
     public String getName() { return name; }
     public int getMaxHP() { return maxHP; }
     public int getCurrentHP() { return currentHP; }
@@ -38,7 +33,6 @@ public abstract class Combatant {
     public boolean isAlive() { return currentHP > 0; }
     public List<StatusEffect> getStatusEffects() { return statusEffects; }
 
-    // --- Attack (includes Arcane Blast bonuses) ---
     public int getAttack() {
         int totalAttack = this.attack;
 
@@ -51,12 +45,10 @@ public abstract class Combatant {
         return totalAttack;
     }
 
-    // --- Defense ---
     public int getDefense() {
         return this.defense;
     }
 
-    // --- HP management ---
     public void takeDamage(int damage) {
         int actualDamage = Math.max(0, damage - getDefense());
         currentHP = Math.max(0, currentHP - actualDamage);
@@ -72,15 +64,10 @@ public abstract class Combatant {
         }
     }
 
-    // --- Status Effects ---
     public void addStatusEffect(StatusEffect effect) {
         statusEffects.add(effect);
     }
 
-    /**
-     * VERY IMPORTANT:
-     * Removes expired effects AND correctly removes their stat bonuses.
-     */
     public void removeExpiredEffects() {
         List<StatusEffect> toRemove = new ArrayList<>();
 
@@ -94,7 +81,6 @@ public abstract class Combatant {
         statusEffects.removeAll(toRemove);
     }
 
-    // --- Temporary stat modifiers ---
     public void modifyDefense(int amount) {
         this.defense += amount;
     }
@@ -107,11 +93,8 @@ public abstract class Combatant {
         
     }
 
-    // --- Abstract ---
     public abstract boolean isPlayer();
 
-    /**
-     * Returns the special skill Action for this combatant, or null if none.
-     */
+
     public abstract Action getSpecialSkill();
 }

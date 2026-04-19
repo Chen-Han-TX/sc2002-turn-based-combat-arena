@@ -39,7 +39,6 @@ public class SmokeBombEffect implements StatusEffect {
 
     @Override
     public void onExpire(Combatant target) {
-        // No cleanup needed
     }
 
 }

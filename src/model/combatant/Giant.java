@@ -3,11 +3,7 @@ package model.combatant;
 import model.action.Action;
 import model.action.DoubleSmash;
 
-/**
- * Giant player class.
- * HP: 400, Attack: 35, Defense: 20, Speed: 10
- * Special Skill: Double Smash — attacks the same target twice in one turn.
- */
+//Giant player class
 public class Giant extends Combatant {
 
     public Giant() {

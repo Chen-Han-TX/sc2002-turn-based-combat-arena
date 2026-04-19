@@ -1,9 +1,9 @@
 package ui;
 
-import model.combatant.Combatant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import model.combatant.Combatant;
 
 public class GameUI {
     private final InputHandler inputHandler;
@@ -30,9 +30,9 @@ public class GameUI {
         System.out.println("  - Smoke Bomb");
         System.out.println();
         System.out.println("Choose difficulty:");
-        System.out.println("  1) Easy  — 3 Goblins");
-        System.out.println("  2) Medium — 1 Goblin + 1 Wolf, Backup Spawn: 2 Wolves");
-        System.out.println("  3) Hard  — 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
+        System.out.println("  1) Easy - 3 Goblins");
+        System.out.println("  2) Medium - 1 Goblin + 1 Wolf, Backup Spawn: 2 Wolves");
+        System.out.println("  3) Hard - 2 Goblins, Backup Spawn: 1 Goblin + 2 Wolves");
     }
 
     /** Prompt and return selected game mode: 1=Classic, 2=Survival. */

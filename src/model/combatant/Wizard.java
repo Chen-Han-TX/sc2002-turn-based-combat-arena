@@ -3,11 +3,7 @@ package model.combatant;
 import model.action.Action;
 import model.action.ArcaneBlast;
 
-/**
- * Wizard player class.
- * HP: 200, Attack: 50, Defense: 10, Speed: 20
- * Special Skill: Arcane Blast
- */
+//wizard player class
 public class Wizard extends Combatant {
 
     public Wizard() {

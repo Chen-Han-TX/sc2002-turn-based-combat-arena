@@ -1,11 +1,9 @@
 package model.item;
 
-import model.combatant.Combatant;
 import java.util.List;
+import model.combatant.Combatant;
 
-/**
- * Potion: Heals 100 HP. Single use.
- */
+//potion: heals 100
 public class Potion implements Item {
     private boolean consumed = false;
 
